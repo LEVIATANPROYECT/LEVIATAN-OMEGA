@@ -1,0 +1,124 @@
+name: PRE-T0 Validate Entry
+
+on:
+  issues:
+    types:
+      - opened
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  validate:
+    if: startsWith(github.event.issue.title, '[OMEGA]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Validate PRE-T0 entry
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const body = issue.body || "";
+
+            const required = [
+              "TOKEN_COMMITMENT",
+              "SEUDÓNIMO",
+              "TIPO DE CONTRIBUCIÓN",
+              "USO DE IA",
+              "DETALLES DE IA",
+              "CONTRIBUCIÓN",
+              "DERIVA_DE",
+              "DECLARACIONES"
+            ];
+
+            const missing = required.filter(
+              field => !body.includes(field)
+            );
+
+            const commitmentMatch = body.match(
+              /TOKEN_COMMITMENT[\s\S]*?([a-fA-F0-9]{64})/
+            );
+
+            const declarations = [
+              "Soy mayor de edad.",
+              "Mi participación es voluntaria.",
+              "Entiendo que no existe remuneración por participar.",
+              "No estoy incluyendo datos personales innecesarios.",
+              "Tengo derecho a utilizar el contenido aportado.",
+              "He leído CONDITIONS.md y PRIVACY.md.",
+              "Entiendo que durante PRE-T0 esta entrada es únicamente una prueba y no forma parte de LEVIATÁN Ω."
+            ];
+
+            const unchecked = declarations.filter(
+              declaration =>
+                !body.includes(`[X] ${declaration}`) &&
+                !body.includes(`[x] ${declaration}`)
+            );
+
+            let errors = [];
+
+            if (missing.length) {
+              errors.push(
+                `Campos ausentes: ${missing.join(", ")}`
+              );
+            }
+
+            if (!commitmentMatch) {
+              errors.push(
+                "TOKEN_COMMITMENT no contiene un SHA-256 hexadecimal válido de 64 caracteres."
+              );
+            }
+
+            if (unchecked.length) {
+              errors.push(
+                "No se han aceptado todas las declaraciones obligatorias."
+              );
+            }
+
+            if (errors.length) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body:
+                  "## LEVIATÁN Ω — PRE-T0\n\n" +
+                  "**VALIDACIÓN: FAIL**\n\n" +
+                  errors.map(e => `- ${e}`).join("\n") +
+                  "\n\nEsta entrada es únicamente una prueba PRE-T0 y no forma parte de la obra."
+              });
+
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: ["pre-t0-invalid"]
+              });
+
+              core.setFailed(
+                "PRE-T0 entry validation failed."
+              );
+
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body:
+                "## LEVIATÁN Ω — PRE-T0\n\n" +
+                "**VALIDACIÓN ESTRUCTURAL: PASS**\n\n" +
+                "El formulario tiene la estructura requerida.\n\n" +
+                "Esto **no significa que el token haya sido validado**, que la contribución haya sido aceptada ni que forme parte de LEVIATÁN Ω.\n\n" +
+                "**T0 NO HA COMENZADO.**"
+            });
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              labels: ["pre-t0-structural-pass"]
+            });
