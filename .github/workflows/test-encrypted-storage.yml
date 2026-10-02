@@ -1,0 +1,213 @@
+name: PRE-T0 Test Encrypted Storage
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  encrypted-storage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Create encrypted PRE-T0 payload
+        id: crypto
+        shell: python
+        run: |
+          import os
+          import json
+          import base64
+          import hashlib
+          import secrets
+          import uuid
+
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+          plaintext = (
+              "LEVIATÁN Ω — PRE-T0 ENCRYPTED STORAGE TEST"
+          ).encode("utf-8")
+
+          internal_id = "omega-test-" + uuid.uuid4().hex
+
+          key = AESGCM.generate_key(bit_length=256)
+          nonce = secrets.token_bytes(12)
+          salt = secrets.token_bytes(32)
+
+          aes = AESGCM(key)
+          ciphertext = aes.encrypt(
+              nonce,
+              plaintext,
+              None
+          )
+
+          salted_hash = hashlib.sha256(
+              salt + plaintext
+          ).hexdigest()
+
+          public = {
+              "internal_id": internal_id,
+              "content_hash": salted_hash,
+              "status": "PRE-T0-TEST"
+          }
+
+          encrypted = {
+              "internal_id": internal_id,
+              "ciphertext": base64.b64encode(
+                  ciphertext
+              ).decode("ascii"),
+              "nonce": base64.b64encode(
+                  nonce
+              ).decode("ascii")
+          }
+
+          secret = {
+              "internal_id": internal_id,
+              "key": base64.b64encode(
+                  key
+              ).decode("ascii"),
+              "salt": base64.b64encode(
+                  salt
+              ).decode("ascii")
+          }
+
+          with open(
+              "/tmp/public.json",
+              "w",
+              encoding="utf-8"
+          ) as f:
+              json.dump(
+                  public,
+                  f,
+                  ensure_ascii=False,
+                  indent=2
+              )
+
+          with open(
+              "/tmp/encrypted.json",
+              "w",
+              encoding="utf-8"
+          ) as f:
+              json.dump(
+                  encrypted,
+                  f,
+                  ensure_ascii=False,
+                  indent=2
+              )
+
+          with open(
+              "/tmp/secret.json",
+              "w",
+              encoding="utf-8"
+          ) as f:
+              json.dump(
+                  secret,
+                  f,
+                  ensure_ascii=False,
+                  indent=2
+              )
+
+          with open(
+              os.environ["GITHUB_OUTPUT"],
+              "a",
+              encoding="utf-8"
+          ) as f:
+              f.write(
+                  f"internal_id={internal_id}\n"
+              )
+
+          print(
+              "Encrypted PRE-T0 payload created."
+          )
+
+          print(
+              "No key, salt or plaintext printed."
+          )
+
+      - name: Install cryptography
+        if: ${{ false }}
+        run: echo "unused"
+
+      - name: Write encrypted content
+        env:
+          GH_TOKEN: ${{ secrets.PRIVATE_CONTENT_TOKEN }}
+          INTERNAL_ID: ${{ steps.crypto.outputs.internal_id }}
+        run: |
+          set -euo pipefail
+
+          CONTENT="$(
+            base64 -w 0 /tmp/encrypted.json
+          )"
+
+          gh api \
+            --method PUT \
+            "/repos/LEVIATANPROYECT/leviatan-omega-private-content/contents/pre-t0-tests/${INTERNAL_ID}.json" \
+            -f message="PRE-T0 encrypted storage test" \
+            -f content="$CONTENT"
+
+          echo "ENCRYPTED CONTENT WRITE: PASS"
+
+      - name: Write secret material
+        env:
+          GH_TOKEN: ${{ secrets.PRIVATE_KEYS_TOKEN }}
+          INTERNAL_ID: ${{ steps.crypto.outputs.internal_id }}
+        run: |
+          set -euo pipefail
+
+          CONTENT="$(
+            base64 -w 0 /tmp/secret.json
+          )"
+
+          gh api \
+            --method PUT \
+            "/repos/LEVIATANPROYECT/leviatan-omega-private-keys/contents/pre-t0-tests/${INTERNAL_ID}.json" \
+            -f message="PRE-T0 secret storage test" \
+            -f content="$CONTENT"
+
+          echo "SECRET MATERIAL WRITE: PASS"
+
+      - name: Verify separation
+        shell: python
+        run: |
+          import json
+
+          with open(
+              "/tmp/public.json",
+              encoding="utf-8"
+          ) as f:
+              public = json.load(f)
+
+          with open(
+              "/tmp/encrypted.json",
+              encoding="utf-8"
+          ) as f:
+              encrypted = json.load(f)
+
+          with open(
+              "/tmp/secret.json",
+              encoding="utf-8"
+          ) as f:
+              secret = json.load(f)
+
+          assert "key" not in public
+          assert "salt" not in public
+          assert "ciphertext" not in public
+
+          assert "ciphertext" in encrypted
+          assert "nonce" in encrypted
+          assert "key" not in encrypted
+          assert "salt" not in encrypted
+
+          assert "key" in secret
+          assert "salt" in secret
+          assert "ciphertext" not in secret
+
+          assert (
+              public["internal_id"]
+              == encrypted["internal_id"]
+              == secret["internal_id"]
+          )
+
+          print("SEPARATION: PASS")
+          print("T0 HAS NOT STARTED.")
