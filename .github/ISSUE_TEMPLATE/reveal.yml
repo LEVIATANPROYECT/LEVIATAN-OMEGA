@@ -1,0 +1,47 @@
+name: "LEVIATÁN Ω — Revelación PRE-T0"
+description: "Revela un token de prueba para verificar su commitment"
+title: "[OMEGA-REVEAL] "
+labels:
+  - "omega-reveal"
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # LEVIATÁN Ω — REVELACIÓN
+
+        **STATUS: PRE-T0**
+
+        Esta plantilla prueba la relación:
+
+        SHA-256(token) = commitment
+
+        Las pruebas PRE-T0 no forman parte de la obra.
+
+  - type: input
+    id: parent_issue
+    attributes:
+      label: ISSUE_ORIGINAL
+      description: "Número del Issue que contiene el TOKEN_COMMITMENT."
+      placeholder: "2"
+    validations:
+      required: true
+
+  - type: input
+    id: token
+    attributes:
+      label: TOKEN
+      description: >
+        Token PRE-T0 correspondiente al commitment.
+        Durante el piloto se utilizarán exclusivamente tokens de prueba.
+      placeholder: "64 caracteres hexadecimales"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: CONFIRMACIÓN PRE-T0
+      options:
+        - label: "Entiendo que esta revelación es una prueba PRE-T0 y no forma parte de LEVIATÁN Ω."
+          required: true
