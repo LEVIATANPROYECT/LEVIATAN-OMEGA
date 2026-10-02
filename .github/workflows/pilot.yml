@@ -1,0 +1,103 @@
+name: PRE-T0 Pilot
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check pilot has not already started
+        shell: python
+        run: |
+          from pathlib import Path
+
+          if Path("pilot/status.json").exists():
+              raise SystemExit(
+                  "PILOT already initialized. "
+                  "Refusing to overwrite timestamps."
+              )
+
+          print("PILOT NOT YET INITIALIZED: PASS")
+
+      - name: Create immutable pilot window
+        shell: python
+        run: |
+          import json
+          import os
+          from datetime import datetime, timedelta, timezone
+          from pathlib import Path
+
+          start = datetime.now(timezone.utc)
+          end = start + timedelta(hours=24)
+
+          data = {
+              "experiment": "LEVIATAN OMEGA",
+              "phase": "PRE-T0 PILOT",
+              "t0_started": False,
+              "pilot_start_utc": start.isoformat(),
+              "pilot_end_utc": end.isoformat(),
+              "duration_hours": 24,
+              "status": "RUNNING"
+          }
+
+          Path("pilot").mkdir(
+              parents=True,
+              exist_ok=True
+          )
+
+          Path(
+              "pilot/status.json"
+          ).write_text(
+              json.dumps(
+                  data,
+                  indent=2,
+                  ensure_ascii=False
+              ) + "\n",
+              encoding="utf-8"
+          )
+
+          print("PILOT WINDOW CREATED")
+          print(
+              "PILOT_START:",
+              data["pilot_start_utc"]
+          )
+          print(
+              "PILOT_END:",
+              data["pilot_end_utc"]
+          )
+          print("T0 HAS NOT STARTED")
+
+      - name: Commit pilot start
+        run: |
+          set -euo pipefail
+
+          git config user.name \
+            "LEVIATAN-OMEGA PRE-T0"
+
+          git config user.email \
+            "leviathan.omega.contact@gmail.com"
+
+          git add pilot/status.json
+
+          git commit \
+            -m "PRE-T0: start 24h pilot"
+
+          git push
+
+      - name: Final result
+        run: |
+          echo "===================================="
+          echo "PRE-T0 PILOT STARTED"
+          echo "DURATION: 24 HOURS"
+          echo "THIS IS NOT T0"
+          echo "T0 HAS NOT STARTED"
+          echo "===================================="
