@@ -1,0 +1,329 @@
+name: PRE-T0 Integrated Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: read
+
+jobs:
+  integrated-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout public registry
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install cryptography
+        run: |
+          python -m pip install "cryptography>=43,<47"
+
+      - name: Build PRE-T0 node
+        id: build
+        shell: python
+        run: |
+          import os
+          import json
+          import uuid
+          import base64
+          import hashlib
+          import secrets
+
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+          plaintext = (
+              "LEVIATÁN Ω — PRE-T0 INTEGRATED TEST"
+          ).encode("utf-8")
+
+          node_id = "omega-test-" + uuid.uuid4().hex
+
+          # -------------------------
+          # ENCRYPTION
+          # -------------------------
+
+          key = AESGCM.generate_key(bit_length=256)
+          nonce = secrets.token_bytes(12)
+          salt = secrets.token_bytes(32)
+
+          ciphertext = AESGCM(key).encrypt(
+              nonce,
+              plaintext,
+              None
+          )
+
+          content_hash = hashlib.sha256(
+              salt + plaintext
+          ).hexdigest()
+
+          # -------------------------
+          # 10 CHILD TOKENS
+          # -------------------------
+
+          child_tokens = []
+          child_commitments = []
+
+          for _ in range(10):
+              token = secrets.token_bytes(32)
+
+              child_tokens.append(
+                  token.hex()
+              )
+
+              child_commitments.append(
+                  hashlib.sha256(token).hexdigest()
+              )
+
+          # -------------------------
+          # PUBLIC NODE
+          # -------------------------
+
+          public = {
+              "id": node_id,
+              "parent": "PRE-T0-ROOT",
+              "generation": 1,
+              "status": "PRE-T0-TEST",
+              "content_hash": content_hash,
+              "child_commitments": child_commitments
+          }
+
+          # -------------------------
+          # ENCRYPTED CONTENT
+          # -------------------------
+
+          encrypted = {
+              "id": node_id,
+              "ciphertext": base64.b64encode(
+                  ciphertext
+              ).decode("ascii"),
+              "nonce": base64.b64encode(
+                  nonce
+              ).decode("ascii")
+          }
+
+          # -------------------------
+          # SECRET MATERIAL
+          # -------------------------
+
+          secret = {
+              "id": node_id,
+              "key": base64.b64encode(
+                  key
+              ).decode("ascii"),
+              "salt": base64.b64encode(
+                  salt
+              ).decode("ascii"),
+              "child_tokens": child_tokens
+          }
+
+          os.makedirs(
+              "/tmp/omega",
+              exist_ok=True
+          )
+
+          for name, data in [
+              ("public", public),
+              ("encrypted", encrypted),
+              ("secret", secret)
+          ]:
+              with open(
+                  f"/tmp/omega/{name}.json",
+                  "w",
+                  encoding="utf-8"
+              ) as f:
+                  json.dump(
+                      data,
+                      f,
+                      ensure_ascii=False,
+                      indent=2,
+                      sort_keys=True
+                  )
+                  f.write("\n")
+
+          with open(
+              os.environ["GITHUB_OUTPUT"],
+              "a",
+              encoding="utf-8"
+          ) as f:
+              f.write(
+                  f"node_id={node_id}\n"
+              )
+
+          print("NODE CREATED")
+          print("10 CHILD COMMITMENTS CREATED")
+          print("AES-256-GCM COMPLETE")
+          print("NO SECRET MATERIAL PRINTED")
+          print("T0 HAS NOT STARTED")
+
+      - name: Verify local separation
+        shell: python
+        run: |
+          import json
+
+          def load(name):
+              with open(
+                  f"/tmp/omega/{name}.json",
+                  encoding="utf-8"
+              ) as f:
+                  return json.load(f)
+
+          public = load("public")
+          encrypted = load("encrypted")
+          secret = load("secret")
+
+          assert len(
+              public["child_commitments"]
+          ) == 10
+
+          assert len(
+              set(public["child_commitments"])
+          ) == 10
+
+          assert len(
+              secret["child_tokens"]
+          ) == 10
+
+          for token, commitment in zip(
+              secret["child_tokens"],
+              public["child_commitments"]
+          ):
+              import hashlib
+
+              assert (
+                  hashlib.sha256(
+                      bytes.fromhex(token)
+                  ).hexdigest()
+                  == commitment
+              )
+
+          assert "key" not in public
+          assert "salt" not in public
+          assert "child_tokens" not in public
+          assert "ciphertext" not in public
+
+          assert "ciphertext" in encrypted
+          assert "nonce" in encrypted
+          assert "key" not in encrypted
+          assert "salt" not in encrypted
+
+          assert "key" in secret
+          assert "salt" in secret
+          assert "child_tokens" in secret
+
+          print("LOCAL SEPARATION: PASS")
+          print("CHILD TOKEN VERIFICATION: PASS")
+
+      - name: Store encrypted content
+        env:
+          GH_TOKEN: ${{ secrets.PRIVATE_CONTENT_TOKEN }}
+          NODE_ID: ${{ steps.build.outputs.node_id }}
+        run: |
+          set -euo pipefail
+
+          CONTENT="$(
+            base64 -w 0 /tmp/omega/encrypted.json
+          )"
+
+          gh api \
+            --method PUT \
+            "/repos/LEVIATANPROYECT/leviatan-omega-private-content/contents/pre-t0-integrated/${NODE_ID}.json" \
+            -f message="PRE-T0 integrated encrypted node" \
+            -f content="$CONTENT"
+
+          echo "PRIVATE CONTENT: PASS"
+
+      - name: Store secret material
+        env:
+          GH_TOKEN: ${{ secrets.PRIVATE_KEYS_TOKEN }}
+          NODE_ID: ${{ steps.build.outputs.node_id }}
+        run: |
+          set -euo pipefail
+
+          CONTENT="$(
+            base64 -w 0 /tmp/omega/secret.json
+          )"
+
+          gh api \
+            --method PUT \
+            "/repos/LEVIATANPROYECT/leviatan-omega-private-keys/contents/pre-t0-integrated/${NODE_ID}.json" \
+            -f message="PRE-T0 integrated secret node" \
+            -f content="$CONTENT"
+
+          echo "PRIVATE KEYS: PASS"
+
+      - name: Store public PRE-T0 node
+        env:
+          NODE_ID: ${{ steps.build.outputs.node_id }}
+        run: |
+          set -euo pipefail
+
+          mkdir -p registry/pre-t0-integrated
+
+          cp \
+            /tmp/omega/public.json \
+            "registry/pre-t0-integrated/${NODE_ID}.json"
+
+          git config user.name \
+            "LEVIATAN-OMEGA PRE-T0"
+
+          git config user.email \
+            "leviathan.omega.contact@gmail.com"
+
+          git add \
+            "registry/pre-t0-integrated/${NODE_ID}.json"
+
+          git commit \
+            -m "PRE-T0: integrated test node ${NODE_ID}"
+
+          git push
+
+      - name: Verify no secrets in public node
+        env:
+          NODE_ID: ${{ steps.build.outputs.node_id }}
+        shell: python
+        run: |
+          from pathlib import Path
+
+          node_id = "${{ steps.build.outputs.node_id }}"
+
+          text = Path(
+              f"registry/pre-t0-integrated/{node_id}.json"
+          ).read_text(
+              encoding="utf-8"
+          )
+
+          forbidden = [
+              '"key"',
+              '"salt"',
+              '"child_tokens"',
+              '"ciphertext"',
+              '"nonce"'
+          ]
+
+          for item in forbidden:
+              assert item not in text, (
+                  f"SECRET LEAK DETECTED: {item}"
+              )
+
+          print("PUBLIC SECRET SCAN: PASS")
+
+      - name: Final PRE-T0 result
+        run: |
+          echo "===================================="
+          echo "LEVIATAN OMEGA PRE-T0"
+          echo "INTEGRATED TEST: PASS"
+          echo "===================================="
+          echo "AES-256-GCM: PASS"
+          echo "PUBLIC/PRIVATE SEPARATION: PASS"
+          echo "10 CHILD TOKENS: PASS"
+          echo "10 PUBLIC COMMITMENTS: PASS"
+          echo "PRIVATE CONTENT STORAGE: PASS"
+          echo "PRIVATE KEY STORAGE: PASS"
+          echo "PUBLIC SECRET SCAN: PASS"
+          echo "T0 HAS NOT STARTED"
