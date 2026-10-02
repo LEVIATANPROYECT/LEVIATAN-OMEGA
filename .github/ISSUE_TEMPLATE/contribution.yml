@@ -1,0 +1,120 @@
+name: "LEVIATÁN Ω — Contribución"
+description: "Entrada al sistema de contribuciones de LEVIATÁN Ω"
+title: "[OMEGA] "
+labels:
+  - "omega-entry"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # LEVIATÁN Ω
+
+        STATUS: PRE-T0
+
+        El experimento oficial todavía no ha comenzado.
+
+        Mientras el repositorio permanezca en PRE-T0,
+        cualquier envío se considera exclusivamente una
+        prueba del sistema y NO forma parte de la obra.
+
+  - type: input
+    id: commitment
+    attributes:
+      label: TOKEN_COMMITMENT
+      description: >
+        Introduce únicamente el compromiso generado por
+        LEVIATAN-OMEGA-TOOL. No publiques aquí el token secreto.
+      placeholder: "64 caracteres hexadecimales"
+    validations:
+      required: true
+
+  - type: input
+    id: pseudonym
+    attributes:
+      label: SEUDÓNIMO
+      description: >
+        Utiliza un seudónimo que no revele información personal,
+        o escribe ANÓNIMO.
+      placeholder: "ANÓNIMO"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: contribution_type
+    attributes:
+      label: TIPO DE CONTRIBUCIÓN
+      options:
+        - Análisis
+        - Crítica
+        - Investigación
+        - Código
+        - Texto
+        - Imagen
+        - Transformación de contribución anterior
+        - Otro
+    validations:
+      required: true
+
+  - type: dropdown
+    id: ai_use
+    attributes:
+      label: USO DE IA
+      description: "¿Se utilizó inteligencia artificial?"
+      options:
+        - "Sí"
+        - "No"
+    validations:
+      required: true
+
+  - type: textarea
+    id: ai_details
+    attributes:
+      label: DETALLES DE IA
+      description: >
+        Si utilizaste IA, indica brevemente cómo.
+        Si no, escribe NO APLICA.
+      placeholder: "NO APLICA"
+    validations:
+      required: true
+
+  - type: textarea
+    id: contribution
+    attributes:
+      label: CONTRIBUCIÓN
+      description: >
+        Durante PRE-T0 utiliza únicamente contenido de prueba.
+        No introduzcas datos personales ni secretos.
+      placeholder: "Contenido de prueba PRE-T0"
+    validations:
+      required: true
+
+  - type: input
+    id: derives_from
+    attributes:
+      label: DERIVA_DE
+      description: >
+        ID interno de una contribución anterior si procede.
+        En caso contrario escribe NINGUNO.
+      placeholder: "NINGUNO"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: declarations
+    attributes:
+      label: DECLARACIONES
+      options:
+        - label: "Soy mayor de edad."
+          required: true
+        - label: "Mi participación es voluntaria."
+          required: true
+        - label: "Entiendo que no existe remuneración por participar."
+          required: true
+        - label: "No estoy incluyendo datos personales innecesarios."
+          required: true
+        - label: "Tengo derecho a utilizar el contenido aportado."
+          required: true
+        - label: "He leído CONDITIONS.md y PRIVACY.md."
+          required: true
+        - label: "Entiendo que durante PRE-T0 esta entrada es únicamente una prueba y no forma parte de LEVIATÁN Ω."
+          required: true
