@@ -1,0 +1,82 @@
+name: PRE-T0 Test Token Isolation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  isolation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: CONTENT token must NOT access private-keys
+        env:
+          GH_TOKEN: ${{ secrets.PRIVATE_CONTENT_TOKEN }}
+        run: |
+          set +e
+
+          gh api \
+            "/repos/LEVIATANPROYECT/leviatan-omega-private-keys" \
+            >/tmp/result.txt 2>/tmp/error.txt
+
+          STATUS=$?
+
+          if [ "$STATUS" -eq 0 ]; then
+            echo "FAIL: CONTENT token can access private-keys."
+            exit 1
+          fi
+
+          echo "PASS: CONTENT token cannot access private-keys."
+
+      - name: KEYS token must NOT access private-content
+        env:
+          GH_TOKEN: ${{ secrets.PRIVATE_KEYS_TOKEN }}
+        run: |
+          set +e
+
+          gh api \
+            "/repos/LEVIATANPROYECT/leviatan-omega-private-content" \
+            >/tmp/result.txt 2>/tmp/error.txt
+
+          STATUS=$?
+
+          if [ "$STATUS" -eq 0 ]; then
+            echo "FAIL: KEYS token can access private-content."
+            exit 1
+          fi
+
+          echo "PASS: KEYS token cannot access private-content."
+
+      - name: CONTENT token still accesses its own repository
+        env:
+          GH_TOKEN: ${{ secrets.PRIVATE_CONTENT_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          gh api \
+            "/repos/LEVIATANPROYECT/leviatan-omega-private-content" \
+            >/dev/null
+
+          echo "PASS: CONTENT token accesses private-content."
+
+      - name: KEYS token still accesses its own repository
+        env:
+          GH_TOKEN: ${{ secrets.PRIVATE_KEYS_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          gh api \
+            "/repos/LEVIATANPROYECT/leviatan-omega-private-keys" \
+            >/dev/null
+
+          echo "PASS: KEYS token accesses private-keys."
+
+      - name: Final result
+        run: |
+          echo "TOKEN ISOLATION: PASS"
+          echo "PRIVATE_CONTENT_TOKEN -> private-content only"
+          echo "PRIVATE_KEYS_TOKEN -> private-keys only"
+          echo "T0 HAS NOT STARTED."
