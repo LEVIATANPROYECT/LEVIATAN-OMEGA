@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - name: Verify token against commitment
+      - name: Verify token and prevent reuse
         uses: actions/github-script@v7
         with:
           script: |
@@ -42,33 +42,8 @@ jobs:
                 : null;
             }
 
-            const originalIssueRaw =
-              section("ISSUE_ORIGINAL");
+            async function fail(message, label = "pre-t0-reveal-fail") {
 
-            const token =
-              section("TOKEN");
-
-            let errors = [];
-
-            if (
-              !originalIssueRaw ||
-              !/^[0-9]+$/.test(originalIssueRaw)
-            ) {
-              errors.push(
-                "ISSUE_ORIGINAL no es válido."
-              );
-            }
-
-            if (
-              !token ||
-              !/^[a-fA-F0-9]{64}$/.test(token)
-            ) {
-              errors.push(
-                "TOKEN debe contener exactamente 64 caracteres hexadecimales."
-              );
-            }
-
-            if (errors.length) {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -76,14 +51,43 @@ jobs:
                 body:
                   "## LEVIATÁN Ω — PRE-T0\n\n" +
                   "**REVELACIÓN: FAIL**\n\n" +
-                  errors.map(e => `- ${e}`).join("\n") +
-                  "\n\nT0 NO HA COMENZADO."
+                  message +
+                  "\n\n**T0 NO HA COMENZADO.**"
               });
 
-              core.setFailed(
-                "Invalid reveal format."
-              );
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: [label]
+              });
 
+              core.setFailed(message);
+            }
+
+            const originalIssueRaw =
+              section("ISSUE_ORIGINAL");
+
+            const token =
+              section("TOKEN");
+
+            if (
+              !originalIssueRaw ||
+              !/^[0-9]+$/.test(originalIssueRaw)
+            ) {
+              await fail(
+                "ISSUE_ORIGINAL no es válido."
+              );
+              return;
+            }
+
+            if (
+              !token ||
+              !/^[a-fA-F0-9]{64}$/.test(token)
+            ) {
+              await fail(
+                "TOKEN debe contener exactamente 64 caracteres hexadecimales."
+              );
               return;
             }
 
@@ -106,21 +110,9 @@ jobs:
               );
 
             if (!commitmentMatch) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issue.number,
-                body:
-                  "## LEVIATÁN Ω — PRE-T0\n\n" +
-                  "**REVELACIÓN: FAIL**\n\n" +
-                  "No se encontró un commitment válido en el Issue original.\n\n" +
-                  "T0 NO HA COMENZADO."
-              });
-
-              core.setFailed(
-                "Original commitment missing."
+              await fail(
+                "No existe un TOKEN_COMMITMENT válido en el Issue original."
               );
-
               return;
             }
 
@@ -136,32 +128,59 @@ jobs:
                 .digest("hex");
 
             if (calculated !== commitment) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issue.number,
-                body:
-                  "## LEVIATÁN Ω — PRE-T0\n\n" +
-                  "**REVELACIÓN: FAIL**\n\n" +
-                  "SHA-256(token) NO coincide con el commitment del Issue original.\n\n" +
-                  "T0 NO HA COMENZADO."
-              });
-
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issue.number,
-                labels: [
-                  "pre-t0-reveal-fail"
-                ]
-              });
-
-              core.setFailed(
-                "Token does not match commitment."
+              await fail(
+                "SHA-256(token) no coincide con el commitment."
               );
-
               return;
             }
+
+            /*
+             * ANTIRREUTILIZACIÓN PRE-T0
+             *
+             * Buscamos otras revelaciones PASS
+             * asociadas al mismo Issue original.
+             *
+             * No publicamos nuevamente el token.
+             */
+
+            const search =
+              await github.rest.search.issuesAndPullRequests({
+                q:
+                  `repo:${context.repo.owner}/${context.repo.repo} ` +
+                  `is:issue label:pre-t0-reveal-pass`
+              });
+
+            for (const candidate of search.data.items) {
+
+              if (candidate.number === issue.number) {
+                continue;
+              }
+
+              const candidateBody =
+                candidate.body || "";
+
+              const match =
+                candidateBody.match(
+                  /### ISSUE_ORIGINAL\s*\n+([0-9]+)/
+                );
+
+              if (
+                match &&
+                Number(match[1]) === originalIssueNumber
+              ) {
+                await fail(
+                  "Este commitment ya tiene una revelación válida. " +
+                  "El token se considera CONSUMED.",
+                  "pre-t0-token-reused"
+                );
+
+                return;
+              }
+            }
+
+            /*
+             * PRIMER CONSUMO VÁLIDO
+             */
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -171,7 +190,8 @@ jobs:
                 "## LEVIATÁN Ω — PRE-T0\n\n" +
                 "**REVELACIÓN CRIPTOGRÁFICA: PASS**\n\n" +
                 "`SHA-256(token) = commitment`\n\n" +
-                "La relación criptográfica ha sido comprobada correctamente.\n\n" +
+                "**TOKEN STATUS: CONSUMED**\n\n" +
+                "Este commitment ya no debe aceptar otra revelación válida.\n\n" +
                 "Esta prueba NO constituye una contribución oficial.\n\n" +
                 "**T0 NO HA COMENZADO.**"
             });
@@ -181,6 +201,20 @@ jobs:
               repo: context.repo.repo,
               issue_number: issue.number,
               labels: [
-                "pre-t0-reveal-pass"
+                "pre-t0-reveal-pass",
+                "pre-t0-token-consumed"
+              ]
+            });
+
+            /*
+             * También marcamos el Issue original.
+             */
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: originalIssueNumber,
+              labels: [
+                "pre-t0-token-consumed"
               ]
             });
