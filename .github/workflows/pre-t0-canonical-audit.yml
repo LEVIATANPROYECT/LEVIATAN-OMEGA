@@ -1,0 +1,234 @@
+name: PRE-T0 Canonical Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Audit required files
+        shell: python
+        run: |
+          from pathlib import Path
+
+          required = [
+              "PROTOCOL.md",
+              "CONDITIONS.md",
+              "PRIVACY.md",
+              "MODERATION.md",
+              "AUCTION_OBJECT.md",
+          ]
+
+          missing = [
+              name
+              for name in required
+              if not Path(name).is_file()
+          ]
+
+          if missing:
+              raise SystemExit(
+                  "MISSING: " + ", ".join(missing)
+              )
+
+          print("REQUIRED DOCUMENTS: PASS")
+
+      - name: Scan canonical repository for obvious secrets
+        shell: python
+        run: |
+          from pathlib import Path
+
+          forbidden_names = {
+              ".env",
+              "private.key",
+              "secret.key",
+              "id_rsa",
+          }
+
+          forbidden_fragments = [
+              "github_pat_",
+              "ghp_",
+              "PRIVATE_CONTENT_TOKEN=",
+              "PRIVATE_KEYS_TOKEN=",
+          ]
+
+          problems = []
+
+          for path in Path(".").rglob("*"):
+
+              if ".git" in path.parts:
+                  continue
+
+              if not path.is_file():
+                  continue
+
+              if path.name in forbidden_names:
+                  problems.append(
+                      f"forbidden filename: {path}"
+                  )
+
+              try:
+                  text = path.read_text(
+                      encoding="utf-8"
+                  )
+              except (UnicodeDecodeError, OSError):
+                  continue
+
+              for fragment in forbidden_fragments:
+                  if fragment in text:
+                      problems.append(
+                          f"possible secret in {path}: "
+                          f"{fragment}"
+                      )
+
+          if problems:
+              raise SystemExit(
+                  "\n".join(problems)
+              )
+
+          print("SECRET SCAN: PASS")
+
+      - name: Verify PRE-T0 state
+        shell: python
+        run: |
+          from pathlib import Path
+
+          protocol = Path(
+              "PROTOCOL.md"
+          ).read_text(
+              encoding="utf-8"
+          )
+
+          if "PRE-T0" not in protocol:
+              raise SystemExit(
+                  "PROTOCOL.md does not identify PRE-T0 state."
+              )
+
+          forbidden = [
+              "STATUS: T0 ACTIVE",
+              "T0 HAS STARTED",
+              "LEVIATÁN Ω HA COMENZADO",
+          ]
+
+          for marker in forbidden:
+              if marker in protocol:
+                  raise SystemExit(
+                      f"T0 activation marker detected: {marker}"
+                  )
+
+          print("PRE-T0 STATE: PASS")
+          print("T0 HAS NOT STARTED.")
+
+      - name: Canonical document hashes
+        shell: python
+        run: |
+          import hashlib
+          import json
+          import unicodedata
+          from pathlib import Path
+
+          files = [
+              "PROTOCOL.md",
+              "CONDITIONS.md",
+              "PRIVACY.md",
+              "MODERATION.md",
+              "AUCTION_OBJECT.md",
+          ]
+
+          hashes = {}
+
+          for filename in files:
+
+              text = Path(
+                  filename
+              ).read_text(
+                  encoding="utf-8"
+              )
+
+              text = unicodedata.normalize(
+                  "NFC",
+                  text
+              )
+
+              text = text.replace(
+                  "\r\n",
+                  "\n"
+              ).replace(
+                  "\r",
+                  "\n"
+              )
+
+              digest = hashlib.sha256(
+                  text.encode("utf-8")
+              ).hexdigest()
+
+              hashes[filename] = digest
+
+          print(
+              json.dumps(
+                  hashes,
+                  indent=2,
+                  ensure_ascii=False
+              )
+          )
+
+          print(
+              "HASH CALCULATION TEST: PASS"
+          )
+
+      - name: Verify metrics state
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+
+          path = Path(
+              "metrics/pre-t0.json"
+          )
+
+          if not path.exists():
+              raise SystemExit(
+                  "metrics/pre-t0.json missing"
+              )
+
+          data = json.loads(
+              path.read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          assert data[
+              "status"
+          ] == "PRE-T0"
+
+          assert data[
+              "t0_started"
+          ] is False
+
+          print(
+              "METRICS PRE-T0 STATE: PASS"
+          )
+
+      - name: Final audit
+        run: |
+          echo "===================================="
+          echo "LEVIATAN OMEGA"
+          echo "PRE-T0 CANONICAL AUDIT"
+          echo "===================================="
+          echo "DOCUMENTS: PASS"
+          echo "SECRET SCAN: PASS"
+          echo "PRE-T0 STATE: PASS"
+          echo "HASH ENGINE: PASS"
+          echo "METRICS: PASS"
+          echo "T0 HAS NOT STARTED."
