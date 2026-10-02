@@ -17,42 +17,30 @@ jobs:
         with:
           script: |
             const labels = [
-              {
-                name: "omega-entry",
-                description: "Entrada LEVIATÁN Ω"
-              },
-              {
-                name: "pre-t0-invalid",
-                description: "Entrada PRE-T0 estructuralmente inválida"
-              },
-              {
-                name: "pre-t0-structural-pass",
-                description: "Entrada PRE-T0 que supera validación estructural"
-              },
-              {
-                name: "pending-moderation",
-                description: "Pendiente de moderación"
-              },
-              {
-                name: "accepted",
-                description: "Contribución aceptada"
-              },
-              {
-                name: "rejected",
-                description: "Contribución rechazada"
-              }
+              ["omega-entry", "Entrada LEVIATÁN Ω"],
+              ["omega-reveal", "Revelación de token PRE-T0"],
+              ["pre-t0-invalid", "Entrada PRE-T0 estructuralmente inválida"],
+              ["pre-t0-structural-pass", "Entrada PRE-T0 que supera validación estructural"],
+              ["pre-t0-reveal-pass", "Token PRE-T0 verificado criptográficamente"],
+              ["pre-t0-reveal-fail", "Token PRE-T0 no válido"],
+              ["pending-moderation", "Pendiente de moderación"],
+              ["accepted", "Contribución aceptada"],
+              ["rejected", "Contribución rechazada"]
             ];
 
-            for (const label of labels) {
+            for (
+              const [name, description]
+              of labels
+            ) {
               try {
                 await github.rest.issues.getLabel({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  name: label.name
+                  name
                 });
 
                 core.info(
-                  `Already exists: ${label.name}`
+                  `Already exists: ${name}`
                 );
 
               } catch (error) {
@@ -64,16 +52,20 @@ jobs:
                 await github.rest.issues.createLabel({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  name: label.name,
-                  description: label.description
+                  name,
+                  description
                 });
 
                 core.info(
-                  `Created: ${label.name}`
+                  `Created: ${name}`
                 );
               }
             }
 
             core.info(
-              "PRE-T0 setup complete. T0 has NOT started."
+              "PRE-T0 setup complete."
+            );
+
+            core.info(
+              "T0 HAS NOT STARTED."
             );
