@@ -1,86 +1,71 @@
-# LEVIATÁN Ω — Condiciones de participación
+# LEVIATÁN Ω — CONDICIONES DE PARTICIPACIÓN
 
-**STATUS: PRE-T0 — DRAFT**
+**ESTADO: PRE-T0**
 
 ## 1. Participación
 
-La participación en LEVIATÁN Ω es voluntaria.
+La participación en LEVIATÁN Ω es voluntaria y está reservada a personas mayores de edad.
 
-Solo pueden participar personas mayores de edad.
+La participación no genera remuneración, premio, salario, participación económica ni derecho sobre una eventual venta de LEVIATÁN Ω.
 
-Participar no tiene coste monetario y no genera derecho a remuneración.
+El precio de salida previsto para la obra es de 1.000.000 €. Este importe no constituye una tasación ni garantiza una venta.
 
-## 2. Venta de LEVIATÁN Ω
+## 2. Contribución
 
-El precio de salida previsto de LEVIATÁN Ω es:
+El participante declara:
 
-**1.000.000 €**
+- que puede legítimamente aportar el contenido enviado;
+- que no incorpora conscientemente contenido que vulnere derechos de terceros;
+- qué utilización de IA ha realizado;
+- qué parte de la aportación considera creación humana;
+- que los datos declarados son correctos según su conocimiento.
 
-Participar no concede al participante:
+## 3. Derechos
 
-- participación económica en una eventual venta;
-- propiedad sobre LEVIATÁN Ω;
-- derecho sobre el precio obtenido;
-- derecho a decidir sobre una eventual venta.
+Respecto de los elementos originales de creación humana sobre los que el participante tenga derechos de explotación suficientes, el participante concede al creador de LEVIATÁN Ω una licencia no exclusiva, mundial y por todo el plazo legal de protección aplicable para:
 
-El creador recibirá el importe de una eventual venta salvo que exista posteriormente un acuerdo contractual distinto.
+- reproducir;
+- distribuir;
+- comunicar públicamente;
+- poner a disposición;
+- transformar;
+- adaptar;
+- traducir;
+- integrar la aportación en LEVIATÁN Ω;
+- documentar, exhibir, publicar, archivar y comercializar LEVIATÁN Ω, incluida su eventual venta.
 
-## 3. Contribuciones
+La licencia se limita a las facultades necesarias para incorporar y explotar la aportación como parte de LEVIATÁN Ω y de su documentación.
 
-El participante solo puede aportar contenido:
+Los derechos morales que legalmente sean irrenunciables permanecen en su titular.
 
-- creado por él;
-- que tenga derecho legítimo a utilizar;
-- o generado con inteligencia artificial, declarando dicho uso.
+El participante puede elegir atribución mediante el seudónimo declarado o ANÓNIMO.
 
-No puede aportar contenido que vulnere derechos de terceros.
+La declaración de uso de IA no presupone por sí sola la existencia o inexistencia de derechos de propiedad intelectual. El participante identifica la intervención humana y garantiza únicamente los derechos que efectivamente pueda conceder.
 
-## 4. Inteligencia artificial
+## 4. Registro
 
-Cuando una contribución utilice IA, deberá indicarse:
+Las aportaciones aceptadas se incorporan a la genealogía de LEVIATÁN Ω mediante un identificador interno.
 
-- si se utilizó IA;
-- qué parte de la contribución utilizó IA;
-- qué parte, en su caso, corresponde a creación humana.
+El registro canónico no publica el login de GitHub, claves privadas, tokens privados, sales ni credenciales.
 
-## 5. Conducta
+## 5. Protección de datos
 
-No se permite:
+El tratamiento de datos se describe en PRIVACY.md.
 
-- spam;
-- suplantación;
-- fabricación de participantes;
-- fabricación de resultados;
-- manipulación de la genealogía;
-- utilización de múltiples identidades para inflar métricas;
-- evasión de controles de plataformas.
+La participación pública mediante GitHub implica que GitHub muestra determinados datos de la cuenta y del envío. LEVIATÁN Ω no puede garantizar la eliminación de copias realizadas independientemente por GitHub o terceros.
 
-## 6. Privacidad
+## 6. Moderación
 
-La participación está sujeta a `PRIVACY.md`.
+Las aportaciones están sujetas a MODERATION.md.
 
-No deben incluirse datos personales innecesarios propios ni de terceros.
+La aceptación técnica de un token no implica automáticamente la aceptación artística o jurídica de la contribución.
 
-## 7. Protocolo
+## 7. Condiciones vigentes
 
-La participación está sujeta al Protocolo Maestro publicado en `PROTOCOL.md`.
+Cada participación referencia mediante CONDICIONES_SHA256 la versión de estas condiciones que acepta.
 
-## 8. Licencia
+Las modificaciones posteriores no alteran retroactivamente las condiciones asociadas a una aportación ya aceptada.
 
-La licencia o cesión definitiva aplicable a las contribuciones todavía no está vigente.
+## 8. PRE-T0
 
-Será definida, publicada y revisada antes de T0.
-
-Cada versión definitiva tendrá su propio SHA-256.
-
-Una contribución solo podrá aceptarse cuando el participante haya aceptado expresamente la versión vigente de las condiciones y licencia.
-
-## 9. Estado PRE-T0
-
-LEVIATÁN Ω todavía no ha comenzado.
-
-Durante PRE-T0:
-
-**NO SE ACEPTAN CONTRIBUCIONES REALES PARA LA OBRA.**
-
-Las pruebas realizadas durante esta fase pertenecen exclusivamente al piloto y no forman parte de LEVIATÁN Ω.
+Mientras figure ESTADO: PRE-T0, ninguna prueba constituye participación oficial en la obra y T0 no ha comenzado.
