@@ -57,10 +57,10 @@ jobs:
           }
 
           forbidden_fragments = [
-              "github_pat_",
-              "ghp_",
-              "PRIVATE_CONTENT_TOKEN=",
-              "PRIVATE_KEYS_TOKEN=",
+              "github_" + "pat_",
+              "gh" + "p_",
+              "PRIVATE_CONTENT_" + "TOKEN=",
+              "PRIVATE_KEYS_" + "TOKEN=",
           ]
 
           problems = []
@@ -183,9 +183,7 @@ jobs:
               )
           )
 
-          print(
-              "HASH CALCULATION TEST: PASS"
-          )
+          print("HASH CALCULATION TEST: PASS")
 
       - name: Verify metrics state
         shell: python
@@ -208,17 +206,10 @@ jobs:
               )
           )
 
-          assert data[
-              "status"
-          ] == "PRE-T0"
+          assert data["status"] == "PRE-T0"
+          assert data["t0_started"] is False
 
-          assert data[
-              "t0_started"
-          ] is False
-
-          print(
-              "METRICS PRE-T0 STATE: PASS"
-          )
+          print("METRICS PRE-T0 STATE: PASS")
 
       - name: Final audit
         run: |
