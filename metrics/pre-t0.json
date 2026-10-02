@@ -1,0 +1,12 @@
+{
+  "status": "PRE-T0",
+  "t0_started": false,
+  "issues_total": 5,
+  "omega_entries": 3,
+  "structural_pass": 3,
+  "reveal_pass": 1,
+  "token_reuse_detected": 1,
+  "pending_moderation": 0,
+  "accepted": 0,
+  "rejected": 0
+}
