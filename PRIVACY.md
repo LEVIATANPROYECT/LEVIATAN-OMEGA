@@ -1,129 +1,97 @@
-# LEVIATÁN Ω — Aviso de privacidad
+# LEVIATÁN Ω — AVISO DE PRIVACIDAD
 
-**STATUS: PRE-T0 — DRAFT**
+**ESTADO: PRE-T0**
 
-## 1. Responsable
+## Responsable
 
-El responsable del tratamiento de datos de LEVIATÁN Ω es el creador del proyecto.
+Responsable: creador de LEVIATÁN Ω.
 
-Canal de privacidad:
+Contacto de privacidad:
+leviathan.omega.contact@gmail.com
 
-**leviathan.omega.contact@gmail.com**
+## Finalidad
 
-## 2. Finalidad
+Los datos se tratan exclusivamente para operar, validar, moderar, documentar, proteger y auditar LEVIATÁN Ω y su genealogía de contribuciones.
 
-Los datos se tratarán exclusivamente para:
+## Base jurídica
 
-- gestionar la participación;
-- validar contribuciones;
-- mantener la genealogía;
-- moderar y resolver apelaciones;
-- prevenir manipulaciones del registro;
-- calcular métricas agregadas;
-- atender solicitudes relacionadas con privacidad.
+La base prevista es el interés legítimo conforme al artículo 6.1.f del RGPD.
 
-## 3. Base jurídica
+Antes de T0 se conservará una ponderación documentada del interés legítimo (LIA).
 
-La base jurídica prevista es el interés legítimo conforme al artículo 6.1.f del RGPD.
+## Datos tratados
 
-Antes de T0 se realizará y documentará la correspondiente ponderación de intereses.
-
-Este documento permanece en borrador hasta completar dicha evaluación.
-
-## 4. Datos tratados
-
-Durante la participación pueden tratarse temporalmente:
+Durante la operación pueden tratarse:
 
 - login de GitHub;
+- número de issue;
 - contenido enviado;
-- número de issue;
-- fecha y hora proporcionadas por GitHub;
-- antigüedad de la cuenta;
-- información técnica necesaria para validar la participación.
+- comentarios;
+- timestamps proporcionados por GitHub;
+- antigüedad de cuenta;
+- relación entre el envío y su ID interno.
 
-## 5. Archivo canónico
+## Minimización
 
-El archivo canónico final está diseñado para evitar identificadores personales innecesarios.
-
-No contendrá:
+El archivo canónico no incorpora:
 
 - login de GitHub;
-- correo electrónico;
 - número de issue;
-- dirección IP;
+- commitment vinculado al login;
 - claves criptográficas;
 - sales;
-- tabla de correspondencia entre identidad e ID interno.
+- tokens privados;
+- credenciales de acceso;
+- antigüedad individual de la cuenta.
 
-Utilizará IDs internos y seudónimos o ANÓNIMO.
+## Almacenamiento
 
-## 6. GitHub y servicios externos
+Los contenidos operativos se almacenan cifrados.
 
-La participación mediante GitHub implica que determinada información puede ser públicamente visible en esa plataforma.
+El contenido cifrado y el material criptográfico necesario para descifrarlo se mantienen en almacenes privados separados.
 
-El proyecto no controla completamente las copias, cachés, archivos o tratamientos realizados independientemente por GitHub u otros terceros.
+Cada entrada utiliza material criptográfico independiente.
 
-Por ello, una solicitud de supresión solo puede garantizar actuaciones sobre sistemas bajo control del proyecto.
+## Conservación
 
-## 7. Almacenamiento temporal
+Los datos operativos identificables se conservarán únicamente durante el tiempo necesario para operar el experimento, atender incidencias y obligaciones jurídicas.
 
-Los contenidos temporales se almacenarán cifrados en:
+Como política inicial del proyecto, se fija un plazo ordinario máximo de 90 días desde el cierre, salvo que una obligación jurídica requiera otra conservación.
 
-`LEVIATANPROYECT/leviatan-omega-private-content`
+Transcurrido el plazo se eliminarán, dentro de los sistemas controlados por el responsable, las relaciones identificativas y el material criptográfico cuya conservación haya dejado de ser necesaria.
 
-Las claves, sales y correspondencias necesarias se almacenarán separadamente en:
+## Derechos
 
-`LEVIATANPROYECT/leviatan-omega-private-keys`
+Las personas afectadas pueden ejercer los derechos que les reconozca la normativa aplicable, incluido el derecho de oposición cuando proceda.
 
-Estos repositorios son privados y no forman parte de la obra final.
-
-## 8. Conservación
-
-Se realizará una revisión de supresión al finalizar:
-
-**DEADLINE_2 = T0 + 216 horas**
-
-Los datos solo se conservarán posteriormente cuando exista una finalidad y justificación aplicables.
-
-Los derechos de privacidad pueden ejercerse independientemente de los deadlines del experimento.
-
-## 9. Oposición y supresión
-
-Las solicitudes pueden enviarse a:
-
-**leviathan.omega.contact@gmail.com**
-
-Cuando proceda una retirada:
-
-- se eliminarán los datos controlables correspondientes;
-- se destruirán las claves necesarias según el procedimiento establecido;
-- se eliminarán las relaciones privadas correspondientes;
-- la genealogía podrá conservar una entrada no identificativa con estado RETIRADO.
-
-La retirada de un nodo no invalida las contribuciones legítimas de sus descendientes.
-
-## 10. Derechos
-
-Las personas podrán ejercer los derechos que les correspondan conforme a la normativa aplicable mediante:
-
-**leviathan.omega.contact@gmail.com**
+Canal:
+leviathan.omega.contact@gmail.com
 
 Las solicitudes se tramitarán dentro de los plazos legalmente aplicables.
 
-## 11. Menores
+## Retirada
 
-LEVIATÁN Ω está diseñado exclusivamente para participantes mayores de edad.
+Cuando proceda retirar una entrada antes del cierre:
 
-## 12. Minimización
+- se elimina el contenido de los sistemas controlados por el proyecto;
+- se elimina el material criptográfico correspondiente;
+- se elimina la relación con el login;
+- el nodo puede conservarse como RETIRADO para preservar la estructura genealógica.
 
-No se solicitarán datos personales que no sean necesarios para el funcionamiento del experimento.
+Los descendientes válidos no pierden automáticamente su validez.
 
-Los participantes no deben publicar datos personales innecesarios propios ni de terceros.
+## GitHub y terceros
 
-## 13. Estado PRE-T0
+Los issues y comentarios se publican inicialmente mediante GitHub.
 
-LEVIATÁN Ω todavía no ha comenzado.
+GitHub y terceros pueden conservar o replicar información pública fuera del control del responsable.
 
-Este aviso permanece en borrador y podrá modificarse antes de T0.
+Por ello, una solicitud de supresión únicamente puede garantizar actuaciones sobre los sistemas que controle LEVIATÁN Ω.
 
-Durante PRE-T0 no se aceptan contribuciones reales destinadas a formar parte de la obra.
+## Seguridad
+
+No se publican claves privadas, tokens privados, credenciales, sales ni tablas de correspondencia entre IDs internos y cuentas.
+
+## PRE-T0
+
+Las entradas de prueba identificadas como PRE-T0 no forman parte de la obra.
