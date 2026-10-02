@@ -23,15 +23,14 @@ jobs:
               ["pre-t0-structural-pass", "Entrada PRE-T0 que supera validación estructural"],
               ["pre-t0-reveal-pass", "Token PRE-T0 verificado criptográficamente"],
               ["pre-t0-reveal-fail", "Token PRE-T0 no válido"],
+              ["pre-t0-token-consumed", "Token PRE-T0 consumido correctamente"],
+              ["pre-t0-token-reused", "Intento PRE-T0 de reutilización de token"],
               ["pending-moderation", "Pendiente de moderación"],
               ["accepted", "Contribución aceptada"],
               ["rejected", "Contribución rechazada"]
             ];
 
-            for (
-              const [name, description]
-              of labels
-            ) {
+            for (const [name, description] of labels) {
               try {
                 await github.rest.issues.getLabel({
                   owner: context.repo.owner,
@@ -39,9 +38,7 @@ jobs:
                   name
                 });
 
-                core.info(
-                  `Already exists: ${name}`
-                );
+                core.info(`Already exists: ${name}`);
 
               } catch (error) {
 
@@ -56,16 +53,9 @@ jobs:
                   description
                 });
 
-                core.info(
-                  `Created: ${name}`
-                );
+                core.info(`Created: ${name}`);
               }
             }
 
-            core.info(
-              "PRE-T0 setup complete."
-            );
-
-            core.info(
-              "T0 HAS NOT STARTED."
-            );
+            core.info("PRE-T0 setup complete.");
+            core.info("T0 HAS NOT STARTED.");
