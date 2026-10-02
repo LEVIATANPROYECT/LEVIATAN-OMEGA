@@ -1,0 +1,10 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: "Privacidad"
+    url: "mailto:leviathan.omega.contact@gmail.com"
+    about: "Solicitudes relacionadas con privacidad."
+
+  - name: "Adquisición de LEVIATÁN Ω"
+    url: "mailto:leviathan.omega.contact@gmail.com"
+    about: "Contacto oficial para cuestiones de adquisición."
