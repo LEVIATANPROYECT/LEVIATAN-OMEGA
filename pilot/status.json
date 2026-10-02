@@ -1,0 +1,9 @@
+{
+  "experiment": "LEVIATAN OMEGA",
+  "phase": "PRE-T0 PILOT",
+  "t0_started": false,
+  "pilot_start_utc": "2026-10-02T06:59:37.988759+00:00",
+  "pilot_end_utc": "2026-10-03T06:59:37.988759+00:00",
+  "duration_hours": 24,
+  "status": "RUNNING"
+}
