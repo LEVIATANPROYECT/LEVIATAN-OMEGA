@@ -12,6 +12,15 @@ jobs:
     timeout-minutes: 5
 
     steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install cryptography
+        run: |
+          python -m pip install "cryptography>=43,<47"
+
       - name: Create encrypted PRE-T0 payload
         id: crypto
         shell: python
@@ -36,6 +45,7 @@ jobs:
           salt = secrets.token_bytes(32)
 
           aes = AESGCM(key)
+
           ciphertext = aes.encrypt(
               nonce,
               plaintext,
@@ -117,17 +127,8 @@ jobs:
                   f"internal_id={internal_id}\n"
               )
 
-          print(
-              "Encrypted PRE-T0 payload created."
-          )
-
-          print(
-              "No key, salt or plaintext printed."
-          )
-
-      - name: Install cryptography
-        if: ${{ false }}
-        run: echo "unused"
+          print("Encrypted PRE-T0 payload created.")
+          print("No key, salt or plaintext printed.")
 
       - name: Write encrypted content
         env:
@@ -136,9 +137,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          CONTENT="$(
-            base64 -w 0 /tmp/encrypted.json
-          )"
+          CONTENT="$(base64 -w 0 /tmp/encrypted.json)"
 
           gh api \
             --method PUT \
@@ -155,9 +154,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          CONTENT="$(
-            base64 -w 0 /tmp/secret.json
-          )"
+          CONTENT="$(base64 -w 0 /tmp/secret.json)"
 
           gh api \
             --method PUT \
@@ -211,3 +208,11 @@ jobs:
 
           print("SEPARATION: PASS")
           print("T0 HAS NOT STARTED.")
+
+      - name: Final PRE-T0 result
+        run: |
+          echo "AES-256-GCM: PASS"
+          echo "PRIVATE CONTENT STORAGE: PASS"
+          echo "PRIVATE KEY STORAGE: PASS"
+          echo "SEPARATION: PASS"
+          echo "T0 HAS NOT STARTED."
