@@ -1,0 +1,58 @@
+name: PRE-T0 Test Private Storage
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-private-storage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Test private-content access
+        env:
+          GH_TOKEN: ${{ secrets.PRIVATE_CONTENT_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          test -n "$GH_TOKEN"
+
+          FILE_PATH="pre-t0-tests/content-access.txt"
+          CONTENT="$(printf 'PRE-T0 CONTENT ACCESS TEST\nT0 HAS NOT STARTED\n' | base64 -w 0)"
+
+          gh api \
+            --method PUT \
+            "/repos/LEVIATANPROYECT/leviatan-omega-private-content/contents/$FILE_PATH" \
+            -f message="PRE-T0: test content storage access" \
+            -f content="$CONTENT"
+
+          echo "PRIVATE CONTENT WRITE: PASS"
+
+      - name: Test private-keys access
+        env:
+          GH_TOKEN: ${{ secrets.PRIVATE_KEYS_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          test -n "$GH_TOKEN"
+
+          FILE_PATH="pre-t0-tests/keys-access.txt"
+          CONTENT="$(printf 'PRE-T0 KEYS ACCESS TEST\nT0 HAS NOT STARTED\n' | base64 -w 0)"
+
+          gh api \
+            --method PUT \
+            "/repos/LEVIATANPROYECT/leviatan-omega-private-keys/contents/$FILE_PATH" \
+            -f message="PRE-T0: test keys storage access" \
+            -f content="$CONTENT"
+
+          echo "PRIVATE KEYS WRITE: PASS"
+
+      - name: Confirm separation
+        run: |
+          echo "CONTENT repository credential: separate"
+          echo "KEYS repository credential: separate"
+          echo "No secret values printed."
+          echo "T0 HAS NOT STARTED."
