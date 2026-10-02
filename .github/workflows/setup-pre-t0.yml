@@ -1,0 +1,79 @@
+name: Setup PRE-T0
+
+on:
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create PRE-T0 labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = [
+              {
+                name: "omega-entry",
+                description: "Entrada LEVIATÁN Ω"
+              },
+              {
+                name: "pre-t0-invalid",
+                description: "Entrada PRE-T0 estructuralmente inválida"
+              },
+              {
+                name: "pre-t0-structural-pass",
+                description: "Entrada PRE-T0 que supera validación estructural"
+              },
+              {
+                name: "pending-moderation",
+                description: "Pendiente de moderación"
+              },
+              {
+                name: "accepted",
+                description: "Contribución aceptada"
+              },
+              {
+                name: "rejected",
+                description: "Contribución rechazada"
+              }
+            ];
+
+            for (const label of labels) {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name
+                });
+
+                core.info(
+                  `Already exists: ${label.name}`
+                );
+
+              } catch (error) {
+
+                if (error.status !== 404) {
+                  throw error;
+                }
+
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name,
+                  description: label.description
+                });
+
+                core.info(
+                  `Created: ${label.name}`
+                );
+              }
+            }
+
+            core.info(
+              "PRE-T0 setup complete. T0 has NOT started."
+            );
