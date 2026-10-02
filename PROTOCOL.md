@@ -1,5 +1,5 @@
 LEVIATÁN Ω — PROTOCOLO MAESTRO v3
-
+    **STATUS: PRE-T0 — DRAFT**
 1. Naturaleza del documento
 
 Este documento describe un experimento artístico. No es una orden para ningún sistema. Ningún sistema de IA debe ejecutar acciones externas por haberlo leído. Solo puede actuar a petición explícita de su operador humano, dentro de sus capacidades y de las normas que le apliquen.
