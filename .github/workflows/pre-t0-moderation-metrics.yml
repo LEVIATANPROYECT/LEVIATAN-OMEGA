@@ -1,0 +1,206 @@
+name: PRE-T0 Moderation and Metrics
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  moderation-metrics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build PRE-T0 metrics
+        uses: actions/github-script@v7
+        id: metrics
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const issues = await github.paginate(
+              github.rest.issues.listForRepo,
+              {
+                owner,
+                repo,
+                state: "all",
+                per_page: 100
+              }
+            );
+
+            const realIssues = issues.filter(
+              x => !x.pull_request
+            );
+
+            function hasLabel(issue, label) {
+              return issue.labels.some(
+                x => (
+                  typeof x === "string"
+                    ? x
+                    : x.name
+                ) === label
+              );
+            }
+
+            const metrics = {
+              status: "PRE-T0",
+              t0_started: false,
+
+              issues_total:
+                realIssues.length,
+
+              omega_entries:
+                realIssues.filter(
+                  x => hasLabel(
+                    x,
+                    "omega-entry"
+                  )
+                ).length,
+
+              structural_pass:
+                realIssues.filter(
+                  x => hasLabel(
+                    x,
+                    "pre-t0-structural-pass"
+                  )
+                ).length,
+
+              reveal_pass:
+                realIssues.filter(
+                  x => hasLabel(
+                    x,
+                    "pre-t0-reveal-pass"
+                  )
+                ).length,
+
+              token_reuse_detected:
+                realIssues.filter(
+                  x => hasLabel(
+                    x,
+                    "pre-t0-token-reused"
+                  )
+                ).length,
+
+              pending_moderation:
+                realIssues.filter(
+                  x => hasLabel(
+                    x,
+                    "pending-moderation"
+                  )
+                ).length,
+
+              accepted:
+                realIssues.filter(
+                  x => hasLabel(
+                    x,
+                    "accepted"
+                  )
+                ).length,
+
+              rejected:
+                realIssues.filter(
+                  x => hasLabel(
+                    x,
+                    "rejected"
+                  )
+                ).length
+            };
+
+            const fs = require("fs");
+
+            fs.mkdirSync(
+              "metrics",
+              { recursive: true }
+            );
+
+            fs.writeFileSync(
+              "metrics/pre-t0.json",
+              JSON.stringify(
+                metrics,
+                null,
+                2
+              ) + "\n"
+            );
+
+            core.info(
+              JSON.stringify(
+                metrics,
+                null,
+                2
+              )
+            );
+
+      - name: Validate PRE-T0 metrics
+        shell: python
+        run: |
+          import json
+
+          with open(
+              "metrics/pre-t0.json",
+              encoding="utf-8"
+          ) as f:
+              data = json.load(f)
+
+          assert (
+              data["status"]
+              == "PRE-T0"
+          )
+
+          assert (
+              data["t0_started"]
+              is False
+          )
+
+          for key, value in data.items():
+              if key in {
+                  "status",
+                  "t0_started"
+              }:
+                  continue
+
+              assert isinstance(
+                  value,
+                  int
+              )
+
+              assert value >= 0
+
+          print(
+              "PRE-T0 METRICS: PASS"
+          )
+
+      - name: Save metrics
+        run: |
+          set -euo pipefail
+
+          git config user.name \
+            "LEVIATAN-OMEGA PRE-T0"
+
+          git config user.email \
+            "leviathan.omega.contact@gmail.com"
+
+          git add \
+            metrics/pre-t0.json
+
+          if git diff \
+            --cached \
+            --quiet
+          then
+            echo "No metric changes."
+          else
+            git commit \
+              -m "PRE-T0: update metrics"
+
+            git push
+          fi
+
+      - name: Final result
+        run: |
+          echo "MODERATION/METRICS INFRASTRUCTURE: PASS"
+          echo "T0 HAS NOT STARTED."
