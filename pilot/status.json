@@ -5,5 +5,8 @@
   "pilot_start_utc": "2026-10-02T06:59:37.988759+00:00",
   "pilot_end_utc": "2026-10-03T06:59:37.988759+00:00",
   "duration_hours": 24,
-  "status": "RUNNING"
+  "status": "ARCHIVED_UNVALIDATED",
+  "required_for_launch": false,
+  "decision_date": "2026-10-05",
+  "decision": "Creator chose launch without a prior pilot; existing PRE-T0 records are retained without claiming pilot validation."
 }
