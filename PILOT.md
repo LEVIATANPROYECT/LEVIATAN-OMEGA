@@ -1,20 +1,28 @@
-# LEVIATÁN Ω — PILOTO PRE-T0
+# LEVIATÁN Ω — ANTECEDENTES PRE-T0
 
-**ESTADO: PRE-T0**
+**ESTADO: ARCHIVADO SIN VALIDACIÓN — NO ES REQUISITO DE LANZAMIENTO**
 
-Este piloto no forma parte de LEVIATÁN Ω y no inicia T₀.
+El 5 de octubre de 2026, el creador decidió lanzar LEVIATÁN Ω sin piloto previo y retirar su obligatoriedad del protocolo.
+
+La ventana registrada del 2 al 3 de octubre de 2026 y las pruebas técnicas anteriores se conservan como antecedentes. Su archivo no acredita que se haya realizado o aprobado un piloto con participantes reales.
+
+Estos antecedentes no forman parte de LEVIATÁN Ω y no inician T₀.
+
+## Plan anterior, conservado como referencia
+
+El siguiente plan queda sin efecto como condición de lanzamiento.
 
 ## Duración
 
-24 horas desde el inicio documentado del piloto.
+El plan anterior preveía 24 horas desde el inicio documentado.
 
 ## Objetivo
 
-Comprobar en condiciones reales el sistema técnico y operativo antes de congelar el Protocolo Maestro.
+El objetivo previsto era comprobar en condiciones reales el sistema técnico y operativo.
 
 ## Pruebas
 
-Durante el piloto se comprobarán:
+Se había previsto comprobar:
 
 - creación de compromisos;
 - revelación de tokens;
@@ -35,7 +43,7 @@ Durante el piloto se comprobarán:
 
 ## Métricas
 
-Se registrarán:
+Se había previsto registrar:
 
 - compromisos creados;
 - revelaciones;
@@ -55,15 +63,10 @@ Ningún resultado del piloto cuenta como participante, contribución, propagaci�
 
 Todo debe identificarse como PRE-T0.
 
-## Criterio de cierre
+## Cierre del antecedente
 
-Transcurridas 24 horas:
+El estado `ARCHIVED_UNVALIDATED` en `pilot/status.json` identifica el archivo de esta preparación, sin atribuirle un resultado satisfactorio. Se mantienen las fechas originales y las métricas registradas.
 
-1. se cierra el piloto;
-2. se exportan sus métricas;
-3. se documentan los fallos;
-4. se corrigen los fallos bloqueantes;
-5. se ejecuta nuevamente PRE-T0 Canonical Audit;
-6. solo después puede congelarse el protocolo.
+La realización, aprobación o repetición de este plan no condiciona la congelación del protocolo ni el lanzamiento.
 
 **T0 NO HA COMENZADO.**

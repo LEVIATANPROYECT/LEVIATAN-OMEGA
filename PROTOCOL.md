@@ -466,54 +466,32 @@ Ambos plazos son fijos.
 
 Después de DEADLINE_2 se determina el conjunto final y se genera el archivo canónico definitivo.
 
-29. Piloto
+29. Lanzamiento sin piloto obligatorio
 
-Antes de T₀ se realizará un piloto independiente que no forma parte de LEVIATÁN Ω.
+Por decisión del creador, LEVIATÁN Ω se lanzará sin un piloto previo. Realizar o aprobar un piloto no es un requisito para congelar el protocolo ni para registrar T₀.
 
-Debe probar:
-
-* participantes reales;
-* tokens;
-* compromiso y revelación;
-* captura;
-* duplicados;
-* reintentos;
-* moderación;
-* apelación;
-* retirada;
-* genealogía;
-* cierre;
-* límites de GitHub;
-* procedimiento de privacidad.
-
-Debe medir:
-
-INVITACIÓN → COMPROMISO → REVELACIÓN → ACEPTACIÓN → PROPAGACIÓN
-
-Los resultados podrán modificar este protocolo antes de su congelación.
+Los registros y pruebas anteriores a T₀ se conservan como antecedentes PRE-T0. No cuentan como participantes, contribuciones ni propagación de la obra, ni se presentan como un piloto aprobado.
 
 30. Secuencia obligatoria antes de T₀
 
 LEVIATÁN Ω no comienza hasta completar:
 
-1. piloto;
-2. correcciones derivadas del piloto;
-3. protocolo definitivo;
-4. definición definitiva del objeto subastado;
-5. condiciones/licencia;
-6. privacidad y ponderación jurídica;
-7. moderación;
-8. plan de análisis;
-9. repositorio público configurado;
-10. almacenes privados configurados;
-11. LEVIATAN-OMEGA-TOOL funcionando;
-12. réplica gratuita configurada;
-13. URL canónica publicada;
-14. clave del creador generada;
-15. huella incorporada al protocolo;
-16. hash definitivo;
-17. sellado inicial;
-18. génesis con los diez compromisos iniciales.
+1. protocolo definitivo;
+2. definición definitiva del objeto subastado;
+3. condiciones/licencia;
+4. privacidad y ponderación jurídica;
+5. moderación;
+6. plan de análisis;
+7. repositorio público configurado;
+8. almacenes privados configurados;
+9. LEVIATAN-OMEGA-TOOL funcionando;
+10. réplica gratuita configurada;
+11. URL canónica publicada;
+12. clave del creador generada;
+13. huella incorporada al protocolo;
+14. hash definitivo;
+15. sellado inicial;
+16. génesis con los diez compromisos iniciales.
 
 Solo entonces se registra:
 

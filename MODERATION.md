@@ -147,4 +147,4 @@ Antes de T0 deberán estar definidos y probados:
 - apelación;
 - medición de latencia.
 
-Durante PRE-T0 las pruebas pertenecen al piloto y no forman parte de LEVIATÁN Ω.
+Las pruebas PRE-T0 se conservan como antecedentes y no forman parte de LEVIATÁN Ω. No se exige un piloto previo al lanzamiento.
