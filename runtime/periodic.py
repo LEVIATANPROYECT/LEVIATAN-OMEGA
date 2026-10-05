@@ -14,15 +14,21 @@ def main():
         print('No active experiment.'); return
     start,_,end=deadlines(config)
     elapsed=(instant(now())-start).total_seconds()
-    if elapsed<21600 or instant(now())>end:
+    if elapsed<21600:
         print('No periodic snapshot due.'); return
     slot=int(elapsed//21600)
-    name=f'timestamps/interval-{slot:02d}.json'
+    final = instant(now()) >= end
+    name='final/archive.json' if final else f'timestamps/interval-{slot:02d}.json'
     proof,_=public.read(name+'.ots')
     if proof is not None:
         print('This interval already has a calendar receipt.'); return
-    registry,_=public.json('registry/live.json')
-    snapshot=public.once(name,registry)
+    if final:
+        snapshot,_=public.json(name)
+        if snapshot is None:
+            print('Final archive not ready.'); return
+    else:
+        registry,_=public.json('registry/live.json')
+        snapshot=public.once(name,registry)
     with tempfile.TemporaryDirectory() as folder:
         path=Path(folder)/'snapshot.json'; path.write_bytes(pack(snapshot))
         proof=stamp(path).read_bytes()

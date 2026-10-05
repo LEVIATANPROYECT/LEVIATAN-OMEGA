@@ -224,6 +224,7 @@ def original_for(number, public, content, keys):
 
 def decide(config, state, captured, data, public, content, keys):
     kind = data.get("kind")
+    d.require(not state.get("closed_at") or kind == "withdraw", "REGISTRY_CLOSED")
     when, actor = captured["received_at"], captured["actor"]
     if captured["event_type"] == "issues":
         if kind == "commit":
@@ -343,7 +344,23 @@ def drain(public, content, keys):
         keys.put(receipt_path, pack(receipt), receipt_sha)
     _, _, end = d.deadlines(config)
     if d.instant(now()) >= end:
-        transition(public, signer, lambda state: d.close_pending(config, state, at=now()))
+        def close(state):
+            if state.get("closed_at"):
+                return state
+            result = d.close_pending(config, state, at=now())
+            result["closed_at"] = now()
+            result["deadline_2"] = end.isoformat().replace("+00:00", "Z")
+            return result
+        final_state = transition(public, signer, close)
+        final_archive = public.once("final/archive.json", sign_state(final_state, signer))
+        certificate = {"version": 1, "creator": "Peter", "responsible_operator": "Pedro Rivilla",
+            "work": "LEVIATÁN Ω", "deadline_2": end.isoformat().replace("+00:00", "Z"),
+            "archive_sha256": hashlib.sha256(pack(final_archive)).hexdigest(),
+            "conditions_sha256": config["conditions_sha256"],
+            "statement": "Este archivo identifica el registro canónico final del acontecimiento. No transfiere derechos ni acredita una venta.",
+            "timestamp_reference": "final/archive.json.ots"}
+        public.once("final/certificate.json", {"signed": certificate,
+            "signature": base64.b64encode(signer.sign(pack(certificate))).decode("ascii")})
     print("Durable queue processed; no submission content or secret material logged.")
 
 

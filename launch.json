@@ -1,10 +1,1 @@
-{
-  "version": 1,
-  "status": "PREPARED",
-  "t0": null,
-  "canonical_url": "https://leviatanproyect.github.io/LEVIATAN-OMEGA/",
-  "creator": "Peter",
-  "controller": "Pedro Rivilla",
-  "conditions_sha256": "93657173e0d946e68afa7fa6bd4d8ac609d065c541ed116caf90614d7d5b22f2",
-  "public_key_fingerprint_sha256": "fd89f7393424ba2e74c9e79065ed1b02c0c2f568562bd7a36212d743b678c91c"
-}
+{"canonical_url":"https://leviatanproyect.github.io/LEVIATAN-OMEGA/","conditions_sha256":"93657173e0d946e68afa7fa6bd4d8ac609d065c541ed116caf90614d7d5b22f2","controller":"Pedro Rivilla","creator":"Peter","deadline_1":"2026-10-12T02:32:00Z","deadline_2":"2026-10-14T02:32:00Z","genesis_sha256":"ea2e18c77fc4c8140db075601c0fa786ec2adb9f820eea4b59d8e06b5372628d","initial_timestamp_status":"CALENDAR_RECEIPTS_PENDING_BITCOIN_CONFIRMATION","pilot_required":false,"public_key_fingerprint_sha256":"fd89f7393424ba2e74c9e79065ed1b02c0c2f568562bd7a36212d743b678c91c","status":"ACTIVE","t0":"2026-10-05T02:32:00Z","version":1}
