@@ -45,9 +45,14 @@ async function refresh() {
       const title = document.createElement("strong"); title.textContent = node.generation === 0 ? "Ω₀ · Génesis" : "G" + node.generation + " · " + node.id.slice(0, 16) + "…";
       const status = document.createElement("small"); status.textContent = node.status;
       const parent = document.createElement("small"); parent.textContent = node.parent ? "Padre: " + node.parent.slice(0, 16) + "…" : "Una persona · Una idea";
-      card.append(title, status, parent); $("genealogy").append(card);
+      card.id = "node-" + node.id;
+      const permalink = document.createElement("a"); permalink.className = "node-link";
+      permalink.href = "#" + card.id; permalink.textContent = "Enlace a este nodo ↗";
+      card.append(title, status, parent, permalink); $("genealogy").append(card);
     }
     if (!nodes.length) $("genealogy").textContent = "El génesis se publicará al activar el experimento.";
+    const requestedNode = document.getElementById(location.hash.slice(1));
+    if (requestedNode?.classList.contains("node")) requestedNode.scrollIntoView({block: "center"});
     $("prepare-button").disabled = !inWindow();
     $("reveal-button").disabled = !inWindow() || !saved;
   } catch (error) { $("status").textContent = "Estado no disponible · consulta el repositorio"; message(error.message, true); }
