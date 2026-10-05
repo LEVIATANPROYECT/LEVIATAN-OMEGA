@@ -1,10 +1,8 @@
-blank_issues_enabled: false
-
+blank_issues_enabled: true
 contact_links:
-  - name: "Privacidad"
-    url: "mailto:leviathan.omega.contact@gmail.com"
-    about: "Solicitudes relacionadas con privacidad."
-
-  - name: "Adquisición de LEVIATÁN Ω"
-    url: "mailto:leviathan.omega.contact@gmail.com"
-    about: "Contacto oficial para cuestiones de adquisición."
+  - name: Participar en LEVIATÁN Ω
+    url: https://leviatanproyect.github.io/LEVIATAN-OMEGA/#participar
+    about: Prepara el compromiso y la revelación con la herramienta oficial.
+  - name: Privacidad y contacto
+    url: mailto:leviathan.omega.contact@gmail.com
+    about: Derechos de privacidad, incidencias y contacto con Peter.

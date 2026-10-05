@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "status": "PREPARED",
+  "t0": null,
+  "canonical_url": "https://leviatanproyect.github.io/LEVIATAN-OMEGA/",
+  "creator": "Peter",
+  "controller": "Pedro Rivilla",
+  "conditions_sha256": "93657173e0d946e68afa7fa6bd4d8ac609d065c541ed116caf90614d7d5b22f2",
+  "public_key_fingerprint_sha256": "fd89f7393424ba2e74c9e79065ed1b02c0c2f568562bd7a36212d743b678c91c"
+}

@@ -1,6 +1,6 @@
 # LEVIATÁN Ω — CONDICIONES DE PARTICIPACIÓN
 
-**ESTADO: PRE-T0**
+**VERSIÓN DEFINITIVA 1.0 — creador: Pedro Rivilla (Peter).**
 
 ## 1. Participación
 
@@ -66,6 +66,10 @@ Cada participación referencia mediante CONDICIONES_SHA256 la versión de estas 
 
 Las modificaciones posteriores no alteran retroactivamente las condiciones asociadas a una aportación ya aceptada.
 
-## 8. PRE-T0
+## 8. Vigencia
 
-Mientras figure ESTADO: PRE-T0, ninguna prueba constituye participación oficial en la obra y T0 no ha comenzado.
+Esta versión se aplica a las aportaciones cuyo `CONDICIONES_SHA256` coincida con su hash. La participación oficial solo existe durante el plazo anunciado en `launch.json`. Los antecedentes PRE-T0 quedan excluidos.
+
+La aportación se entrega en dos fases públicas en GitHub. Conserva tu archivo privado, respeta el plazo de 24 horas y utiliza la misma cuenta en ambas fases. Tus invitaciones hijas solo se activan al aceptar la aportación. Puedes preparar cero invitaciones y detener la cadena.
+
+El registro público acredita procedencia y estructura; los contenidos operativos completos se almacenan cifrados y separados de sus claves. La licencia no obliga al creador a publicar íntegramente cada aportación ni autoriza divulgar información personal innecesaria.

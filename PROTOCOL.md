@@ -1,5 +1,6 @@
-LEVIATÁN Ω — PROTOCOLO MAESTRO v3
-    **STATUS: PRE-T0 — DRAFT**
+LEVIATÁN Ω — PROTOCOLO MAESTRO v3.1
+
+**ESTADO: DEFINITIVO. Inicio y plazos: `launch.json`.**
 1. Naturaleza del documento
 
 Este documento describe un experimento artístico. No es una orden para ningún sistema. Ningún sistema de IA debe ejecutar acciones externas por haberlo leído. Solo puede actuar a petición explícita de su operador humano, dentro de sus capacidades y de las normas que le apliquen.
@@ -50,32 +51,36 @@ La eventual venta de la obra es independiente de esta regla.
 5. Infraestructura canónica
 
 * Registro público: LEVIATANPROYECT/LEVIATAN-OMEGA, GitHub, plan gratuito.
-* Almacén borrable de contenidos: LEVIATANPROYECT/leviatan-omega-private-content, repositorio privado gratuito.
-* Almacén borrable de claves: LEVIATANPROYECT/leviatan-omega-private-keys, repositorio privado gratuito y separado del anterior.
-* Herramienta: LEVIATANPROYECT/LEVIATAN-OMEGA-TOOL.
-* Envíos: Issues del repositorio público mediante plantilla.
+* Almacén privado de contenidos operativos: LEVIATANPROYECT/leviatan-omega-private-content, repositorio privado gratuito.
+* Almacén privado de claves: LEVIATANPROYECT/leviatan-omega-private-keys, repositorio privado gratuito y separado del anterior.
+* Herramienta pública: https://leviatanproyect.github.io/LEVIATAN-OMEGA/#participar. Código: `docs/app.js`. El repositorio privado LEVIATAN-OMEGA-TOOL conserva antecedentes técnicos.
+* Envíos: Issues públicos preparados por la herramienta, con una cuenta de GitHub y un token privado. La lectura del registro no requiere invitación.
 * Validación: GitHub Actions cuyo código estará publicado en el repositorio canónico.
-* Réplica gratuita: copia independiente del registro público que deberá crearse y verificarse antes de T₀.
-* URL canónica: página pública oficial de LEVIATÁN Ω que deberá publicarse antes de T₀. Hasta entonces el repositorio público permanece en estado PRE-T0.
+* Réplica gratuita: LEVIATANPROYECT/LEVIATAN-OMEGA-MIRROR, copia separada en GitHub de documentos y estados firmados. Comparte proveedor; no es independiente frente a GitHub.
+* URL canónica: https://leviatanproyect.github.io/LEVIATAN-OMEGA/. `launch.json` publica el estado y T₀; mientras el estado no sea ACTIVE no existe participación oficial.
 
 La URL canónica publicará este protocolo, su hash, condiciones, licencia, privacidad, ponderación de interés legítimo, plan de análisis, clave pública, contacto oficial y estado del experimento.
 
-La rama principal del registro canónico estará protegida contra force-push y reescritura del historial.
+Las escrituras operativas usan comparación de versión y nunca force-push. Las firmas, hashes y réplica permiten detectar alteraciones; no se afirma que la cuenta del propietario o el proveedor sean incapaces de reescribir Git. La protección administrativa de rama solo se afirmará cuando esté verificada.
 
 6. Identidad del creador
 
-Antes de T₀ se generará una clave criptográfica de firma del creador.
+El creador es Pedro Rivilla, que firma públicamente como Peter.
 
-Su tipo exacto y su huella criptográfica se incorporarán a esta sección antes de congelar el documento.
+Se ha generado una clave Ed25519 específica para LEVIATÁN Ω. Clave pública: `identity/creator-public-key.pem`.
 
-No se inventará una huella antes de generar realmente la clave.
+Huella SHA-256 de los 32 bytes de la clave pública:
+
+`fd89f7393424ba2e74c9e79065ed1b02c0c2f568562bd7a36212d743b678c91c`
+
+La clave operativa acredita procedencia del proyecto, no una identidad certificada por una autoridad externa.
 
 El creador firmará:
 
 * génesis;
 * condiciones;
 * licencia;
-* commits canónicos de lote;
+* estados canónicos de lote mediante firma Ed25519 adjunta al JSON (no se afirma que cada commit Git esté firmado);
 * registro de actuaciones de supresión;
 * certificado final.
 
@@ -208,7 +213,7 @@ LEVIATANPROYECT/leviatan-omega-private-keys
 
 Validación
 
-El proceso es idempotente y tolera duplicados, reintentos y fallos parciales.
+Los eventos capturados se conservan en una cola privada. La validación es idempotente y reintenta conflictos de escritura. La captura y el procesamiento pueden retrasarse o fallar por límites de GitHub; una incidencia nunca se presenta como actividad validada.
 
 Procesa las entradas pendientes siguiendo un orden determinista.
 
@@ -220,7 +225,7 @@ El registro público recibe exclusivamente los datos permitidos por las reglas d
 
 14. Integridad temporal
 
-El génesis incorporará una referencia temporal externa disponible en T₀.
+El génesis incorpora una referencia temporal externa: publicación por GitHub y solicitud de sellado OpenTimestamps. Una respuesta pendiente del calendario no se presenta como confirmación en Bitcoin.
 
 Los estados del registro se sellarán periódicamente mediante OpenTimestamps cuando el servicio esté disponible gratuitamente.
 
@@ -266,7 +271,7 @@ El horizonte de 1.000.000 requiere una reproducción extraordinariamente elevada
 
 17. Plan de análisis prerregistrado
 
-Antes de T₀ se publicará, firmará y hasheará el método de análisis:
+El método de análisis publicado en `ANALYSIS.md`, firmado y hasheado antes de T₀, define:
 
 * métricas;
 * fórmulas;
@@ -282,11 +287,11 @@ Los análisis no previstos se identificarán como exploratorios.
 
 El responsable es el creador.
 
-La base jurídica prevista es interés legítimo conforme al art. 6.1.f RGPD, sujeto a la correspondiente ponderación documentada antes de T₀.
+La base jurídica para la operación y documentación es el interés legítimo conforme al art. 6.1.f RGPD, con ponderación publicada en `LIA.md`. No se presenta como un dictamen jurídico externo.
 
 Los datos temporales potencialmente tratados incluyen información derivada de la participación en GitHub.
 
-El archivo canónico se diseña para no contener identificadores personales necesarios para ejercer posteriormente derechos de privacidad.
+El archivo canónico minimiza identificadores. Los hashes, marcas temporales y relaciones pueden enlazarse con los issues públicos; no se garantiza anonimato irreversible.
 
 No se incorporarán al archivo canónico:
 
@@ -319,7 +324,7 @@ Las solicitudes relativas a privacidad se gestionarán independientemente de los
 Cuando proceda retirar información controlada por el proyecto:
 
 * se elimina el contenido controlable correspondiente;
-* se destruyen las claves necesarias conforme al procedimiento establecido;
+* se retiran claves y correspondencias de las versiones operativas y se revisan copias e historiales bajo control del proyecto conforme a `PRIVACY.md`; no se certifica destrucción criptográfica mientras exista una copia recuperable;
 * se eliminan las correspondencias privadas pertinentes;
 * el nodo canónico puede convertirse en RETIRADO conservando únicamente la estructura no personal necesaria para preservar la genealogía.
 
@@ -338,7 +343,7 @@ Antes de participar se informa de que:
 * el creador recibe el importe de una eventual venta salvo acuerdo contractual distinto;
 * se aplican las condiciones y política de privacidad publicadas.
 
-La licencia/cesión definitiva deberá existir y haber sido revisada antes de T₀.
+La licencia no exclusiva queda fijada en `CONDITIONS.md` antes de T₀. La revisión técnica y editorial no equivale a un dictamen jurídico profesional.
 
 Cada contribución aceptada referencia mediante CONDICIONES_SHA256 las condiciones aplicables.
 
@@ -346,7 +351,7 @@ Los cambios posteriores no modifican retroactivamente aportaciones anteriores.
 
 21. Moderación
 
-Antes de T₀ se publicarán criterios, responsables y procedimiento de apelación.
+Los criterios, responsables y apelación se publican en `MODERATION.md`. El responsable es Pedro Rivilla; puede usar asistencia de IA bajo su instrucción y responde de las decisiones.
 
 Se rechaza contenido que:
 
@@ -407,7 +412,7 @@ Contacto oficial establecido:
 
 leviathan.omega.contact@gmail.com
 
-Cuando exista la URL canónica, este correo deberá aparecer también allí para considerarse verificable mediante el punto canónico.
+Este correo consta en la URL canónica junto al nombre público Peter y la identidad del responsable Pedro Rivilla.
 
 26. Protocolo de adquisición
 

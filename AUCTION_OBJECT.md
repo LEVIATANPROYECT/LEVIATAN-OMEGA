@@ -1,6 +1,6 @@
 # LEVIATÁN Ω — Objeto de la subasta
 
-**STATUS: PRE-T0 — DRAFT**
+**VERSIÓN DEFINITIVA 1.0 — creador: Pedro Rivilla (Peter).**
 
 ## 1. Objeto
 
@@ -73,12 +73,6 @@ Contacto oficial actualmente establecido:
 
 Ningún agente participante puede aceptar una venta, recibir pagos o negociar en nombre del creador.
 
-## 8. Estado PRE-T0
+## 8. Calendario y operación
 
-LEVIATÁN Ω todavía no ha comenzado.
-
-El objeto definitivo de la subasta deberá quedar congelado antes de T0 conforme al Protocolo Maestro.
-
-Hasta entonces este documento permanece:
-
-**PRE-T0 — DRAFT**
+El experimento comienza en el instante T0 publicado en `launch.json`. La oferta del original es posterior al cierre y certificación. No hay ahora una plataforma de pujas ni una venta cerrada. Cualquier contrato o pago debe ser atendido por el creador.
