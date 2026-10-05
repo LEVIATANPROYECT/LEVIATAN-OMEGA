@@ -102,6 +102,35 @@ class AdapterTests(unittest.TestCase):
         import base64
         signer.public_key().verify(base64.b64decode(envelope["signature"]["signature"]), pack(envelope["state"]))
 
+    def test_captured_commit_reveal_and_authorized_moderation_flow(self):
+        from test_domain import ParticipationRules
+        from runtime.github_runtime import decide, OWNER
+        rules = ParticipationRules(); rules.setUp()
+        public, content, keys = MemoryRepository(), MemoryRepository(), MemoryRepository()
+        commit = self.event()
+        commit['issue']['body'] = PREFIX + json.dumps(rules.original['data'])
+        commit['issue']['created_at'] = rules.original['received_at']
+        capture(commit, 'issues', content, keys)
+        # Mutable GitHub body is hostile and must never replace captured data.
+        public.request = lambda path: {'id':123, 'body':'edited after commitment'}
+        reveal = copy.deepcopy(commit)
+        reveal['issue'].update(id=124,number=9,created_at='2026-10-01T02:00:00Z',
+          body=PREFIX+json.dumps(dict(rules.data,original_issue=8)))
+        capture(reveal,'issues',content,keys)
+        captured=load_capture('issue-124',content,keys)
+        pending,code=decide(rules.config,rules.state,captured,parse_body(captured['body']),public,content,keys)
+        self.assertEqual(code,'PENDIENTE_MODERACIÓN')
+        command={'kind':'accept','version':1,'reason':'VALID'}
+        event={'event_type':'issue_comment','issue_id':124,'actor':'attacker','received_at':'2026-10-01T03:00:00Z'}
+        with self.assertRaisesRegex(d.InvalidEntry,'MODERATOR_REQUIRED'):
+            decide(rules.config,pending,event,command,public,content,keys)
+        event['actor']=OWNER
+        accepted,code=decide(rules.config,pending,event,command,public,content,keys)
+        self.assertEqual(code,'ACEPTADA')
+        self.assertEqual(len(accepted['consumed']),1)
+        replay,_=decide(rules.config,accepted,event,command,public,content,keys)
+        self.assertEqual(accepted,replay)
+
 
 if __name__ == "__main__":
     unittest.main()

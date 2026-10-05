@@ -24,6 +24,10 @@ def main():
         assert genesis['status'] == 'GENESIS' and len(genesis['child_commitments']) == 10
         signature = json.loads(Path('launch-signature.json').read_text('utf-8'))
         public.verify(base64.b64decode(signature['signature']), Path('launch.json').read_bytes())
+        genesis_document = json.loads(Path('genesis.json').read_text('utf-8'))
+        public.verify(base64.b64decode(genesis_document['signature']), pack(genesis_document['signed']))
+        assert genesis['child_commitments'] == genesis_document['signed']['child_commitments']
+        assert hashlib.sha256(Path('genesis.json').read_bytes()).hexdigest() == config['genesis_sha256']
     forbidden = {'login', 'email', 'actor', 'issue', 'token', 'salt', 'key', 'child_tokens', 'ciphertext'}
     for node in envelope['state']['nodes'].values():
         assert not forbidden.intersection(node)
