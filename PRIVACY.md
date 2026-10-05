@@ -1,97 +1,46 @@
-# LEVIATÁN Ω — AVISO DE PRIVACIDAD
+# LEVIATÁN Ω — Aviso de privacidad
 
-**ESTADO: PRE-T0**
+Versión definitiva 1.0 · 5 de octubre de 2026.
 
-## Responsable
+## Responsable y contacto
 
-Responsable: creador de LEVIATÁN Ω.
+Pedro Rivilla, creador de LEVIATÁN Ω, con el nombre público Peter.
+Contacto para derechos y consultas: **leviathan.omega.contact@gmail.com**.
 
-Contacto de privacidad:
-leviathan.omega.contact@gmail.com
+## Antes de enviar
 
-## Finalidad
+La participación requiere una cuenta de GitHub. El compromiso, la revelación y los comentarios se publican como issues; GitHub muestra la cuenta y el contenido. Usa un seudónimo y no envíes datos personales innecesarios, información sensible ni datos de terceros. El archivo privado generado por la herramienta contiene futuras invitaciones: no lo publiques.
 
-Los datos se tratan exclusivamente para operar, validar, moderar, documentar, proteger y auditar LEVIATÁN Ω y su genealogía de contribuciones.
+No hay rastreadores publicitarios ni analítica de visitas incorporados por el proyecto. La infraestructura puede generar registros técnicos propios. La herramienta prepara el envío en tu navegador y tú lo publicas en GitHub.
 
-## Base jurídica
+## Finalidades, base y destinatarios
 
-La base prevista es el interés legítimo conforme al artículo 6.1.f del RGPD.
+Los datos mínimos permiten validar, moderar, documentar y proteger el experimento, atender apelaciones y derechos y auditar la genealogía. La base para la operación es el interés legítimo del artículo 6.1.f RGPD, ponderado en [LIA.md](LIA.md). No se usan para publicidad, perfiles comerciales o venta de bases de datos.
 
-Antes de T0 se conservará una ponderación documentada del interés legítimo (LIA).
+Se tratan contenido y declaraciones, cuenta, identificador del issue o comentario y horas de recepción. No se exige nombre real ni documento de identidad. Solo pueden participar mayores de edad. La moderación puede ser asistida por IA bajo instrucción del responsable, con acceso limitado a la información necesaria. No implica verificación de identidad ni decisiones con efectos jurídicos o similares.
 
-## Datos tratados
+GitHub presta alojamiento, cuentas y ejecución técnica conforme a sus [condiciones y privacidad](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement). La infraestructura y herramientas del responsable pueden implicar tratamiento fuera del EEE conforme a los mecanismos aplicables del proveedor. No se afirma que los datos permanezcan exclusivamente en España. Los issues públicos son accesibles desde cualquier país.
 
-Durante la operación pueden tratarse:
+## Registro y separación
 
-- login de GitHub;
-- número de issue;
-- contenido enviado;
-- comentarios;
-- timestamps proporcionados por GitHub;
-- antigüedad de cuenta;
-- relación entre el envío y su ID interno.
+El registro canónico excluye login, correo, número de issue, IP, claves, sales y tablas de correspondencias. Publica identificadores internos aleatorios, relaciones padre-hijo, estados, tiempos y compromisos criptográficos. Estos datos pueden correlacionarse con envíos públicos: no se garantiza anonimato irreversible.
 
-## Minimización
+Las capturas operativas se cifran con AES-256-GCM y claves por evento. Cifrado y claves se guardan en repositorios privados separados. Las futuras invitaciones no se envían al servidor: solo sus hashes. Un token revelado para consumirlo pasa a ser público según el procedimiento de participación.
 
-El archivo canónico no incorpora:
+## Conservación y limitaciones reales
 
-- login de GitHub;
-- número de issue;
-- commitment vinculado al login;
-- claves criptográficas;
-- sales;
-- tokens privados;
-- credenciales de acceso;
-- antigüedad individual de la cuenta.
+Al terminar T0 + 216 horas se revisan los datos operativos. El plazo ordinario máximo de conservación identificable es de 90 días desde el cierre, salvo obligación o necesidad jurídica concreta documentada. El archivo artístico conserva solo lo necesario y está sujeto a los derechos que procedan.
 
-## Almacenamiento
+Git conserva versiones anteriores. Borrar un archivo de la rama actual **no destruye por sí solo** las claves o datos de su historial. Ante una supresión procedente se retiran las copias operativas, se revisan historiales y copias bajo control del responsable y se solicita al proveedor la retirada adicional que corresponda. No se certificará destrucción criptográfica mientras existan copias recuperables conocidas. Las actuaciones y limitaciones se documentan sin identificar públicamente a la persona solicitante.
 
-Los contenidos operativos se almacenan cifrados.
+El proyecto no puede garantizar el borrado de copias independientes, forks, capturas de terceros o retenciones del proveedor. Esto no exime de actuar sobre lo que controla ni de tramitar los derechos.
 
-El contenido cifrado y el material criptográfico necesario para descifrarlo se mantienen en almacenes privados separados.
+## Derechos y retirada
 
-Cada entrada utiliza material criptográfico independiente.
+Puedes solicitar acceso, rectificación, supresión, limitación u oposición y los demás derechos aplicables al contacto oficial. Se responde ordinariamente en un mes; cualquier ampliación legal se comunica y justifica. Puede pedirse verificación proporcionada del control del envío, sin requerir por defecto copia de identidad. Puedes reclamar ante la [Agencia Española de Protección de Datos](https://www.aepd.es/derechos-y-deberes/ejerce-tus-derechos).
 
-## Conservación
+Para retirar la participación, comenta en tu issue de revelación desde la misma cuenta el prefijo LEVIATAN-OMEGA/1, una nueva línea y el JSON {"kind":"withdraw","version":1}.
 
-Los datos operativos identificables se conservarán únicamente durante el tiempo necesario para operar el experimento, atender incidencias y obligaciones jurídicas.
+Esto marca el nodo RETIRADA y abre una revisión de privacidad; no afirma un borrado instantáneo de historiales. También puedes escribir al correo oficial. Hijos e invitaciones pendientes conservan su validez. Los derechos siguen vigentes después de ambos plazos artísticos.
 
-Como política inicial del proyecto, se fija un plazo ordinario máximo de 90 días desde el cierre, salvo que una obligación jurídica requiera otra conservación.
-
-Transcurrido el plazo se eliminarán, dentro de los sistemas controlados por el responsable, las relaciones identificativas y el material criptográfico cuya conservación haya dejado de ser necesaria.
-
-## Derechos
-
-Las personas afectadas pueden ejercer los derechos que les reconozca la normativa aplicable, incluido el derecho de oposición cuando proceda.
-
-Canal:
-leviathan.omega.contact@gmail.com
-
-Las solicitudes se tramitarán dentro de los plazos legalmente aplicables.
-
-## Retirada
-
-Cuando proceda retirar una entrada antes del cierre:
-
-- se elimina el contenido de los sistemas controlados por el proyecto;
-- se elimina el material criptográfico correspondiente;
-- se elimina la relación con el login;
-- el nodo puede conservarse como RETIRADO para preservar la estructura genealógica.
-
-Los descendientes válidos no pierden automáticamente su validez.
-
-## GitHub y terceros
-
-Los issues y comentarios se publican inicialmente mediante GitHub.
-
-GitHub y terceros pueden conservar o replicar información pública fuera del control del responsable.
-
-Por ello, una solicitud de supresión únicamente puede garantizar actuaciones sobre los sistemas que controle LEVIATÁN Ω.
-
-## Seguridad
-
-No se publican claves privadas, tokens privados, credenciales, sales ni tablas de correspondencia entre IDs internos y cuentas.
-
-## PRE-T0
-
-Las entradas de prueba identificadas como PRE-T0 no forman parte de la obra.
+Datos y claves privadas no forman parte de una eventual venta de la obra.

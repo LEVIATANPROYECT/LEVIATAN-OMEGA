@@ -1,6 +1,6 @@
 # LEVIATÁN Ω — Política de moderación
 
-**STATUS: PRE-T0 — DRAFT**
+**VERSIÓN DEFINITIVA 1.0**
 
 ## 1. Objetivo
 
@@ -81,7 +81,7 @@ La latencia real se medirá y formará parte de las métricas.
 
 ## 8. Moderadores
 
-Los moderadores definitivos deberán identificarse por su función antes de T0.
+Responsable de moderación: Pedro Rivilla (Peter), mediante la cuenta LEVIATANPROYECT. Puede utilizar asistencia de IA bajo sus instrucciones, también para ejecutar decisiones conforme a estos criterios. No se presenta a la IA como una persona ni como un revisor independiente.
 
 Cuando sea posible, una apelación será revisada por una persona distinta de quien tomó la decisión inicial.
 
@@ -135,16 +135,20 @@ El sistema contabiliza nodos genealógicamente válidos y deja expresamente esta
 
 No se acusará públicamente a una persona de utilizar múltiples identidades sin evidencia suficiente.
 
-## 14. Estado PRE-T0
+## 14. Procedimiento técnico
 
-Esta política permanece en borrador.
+La validación técnica consume la invitación y deja la contribución PENDIENTE_MODERACIÓN. El responsable publica en el issue de revelación un comando JSON con el prefijo `LEVIATAN-OMEGA/1`, seguido de una nueva línea:
 
-Antes de T0 deberán estar definidos y probados:
+`{"kind":"accept","version":1,"reason":"VALID"}`
 
-- moderadores;
-- códigos de rechazo;
-- procedimiento técnico;
-- apelación;
-- medición de latencia.
+o `{"kind":"reject","version":1,"reason":"IRRELEVANT"}`.
 
-Las pruebas PRE-T0 se conservan como antecedentes y no forman parte de LEVIATÁN Ω. No se exige un piloto previo al lanzamiento.
+Los códigos de rechazo son IRRELEVANT, SPAM, RIGHTS, PRIVACY, ILLEGAL, MANIPULATION y CONDITIONS. Solo la cuenta del responsable puede moderar. La justificación adicional debe ser proporcionada y no divulgar información personal innecesaria.
+
+La apelación se presenta desde la cuenta autora como comentario en el mismo issue, con el mismo prefijo y nueva línea:
+
+`{"kind":"appeal","version":1}`
+
+El estado pasa a APELACIÓN_PENDIENTE; se aplica el plazo de 24 horas y el cierre final. Una apelación puede incluir por separado una explicación pública sin datos sensibles, o enviarse al contacto oficial. Un nuevo envío no sustituye la captura original.
+
+Las retiradas se gestionan conforme a PRIVACY.md. Los fallos y retrasos se registran; el objetivo de diez minutos no es una garantía de disponibilidad. No se exige un piloto para lanzar.

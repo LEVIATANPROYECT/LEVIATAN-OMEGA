@@ -1,0 +1,2 @@
+Ed25519 public key; SHA-256 of the 32 raw public-key bytes
+fd89f7393424ba2e74c9e79065ed1b02c0c2f568562bd7a36212d743b678c91c
