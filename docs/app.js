@@ -21,14 +21,42 @@ async function commitment(payload, salt) {
   return hash(joined);
 }
 let config, state, saved;
+let registryReady = false, firstRefresh = true, preparing = false;
 const utc = text => new Date(text).toISOString().replace("T", " · ").replace(/\.\d{3}Z$/, " UTC");
 function message(text, error = false) { $("form-message").textContent = text; $("form-message").classList.toggle("error", error); }
 function inWindow() { const time = Date.now(); return config?.status === "ACTIVE" && time >= Date.parse(config.t0) && time < Date.parse(config.t0) + 168 * 3600000; }
+function countdownText(now = Date.now()) {
+  if (!config || config.status !== "ACTIVE") return "Inicio pendiente";
+  const start = Date.parse(config.t0), end = start + 168 * 3600000;
+  if (now < start) return "Inicio programado";
+  if (now >= end) return "Aportaciones cerradas";
+  const minutes = Math.ceil((end - now) / 60000);
+  const days = Math.floor(minutes / 1440), hours = Math.floor((minutes % 1440) / 60);
+  return `${days} días · ${hours} h · ${minutes % 60} min`;
+}
+function updateWindow() {
+  $("countdown").textContent = countdownText();
+  $("prepare-button").disabled = preparing || !registryReady || !inWindow();
+  $("reveal-button").disabled = !registryReady || !inWindow() || !saved;
+}
+function issueNumber(value) {
+  const text = value.trim();
+  const match = text.match(/^(?:https:\/\/github\.com\/LEVIATANPROYECT\/LEVIATAN-OMEGA\/issues\/)?([1-9]\d*)\/?(?:[?#].*)?$/i);
+  const number = match ? Number(match[1]) : NaN;
+  if (!Number.isSafeInteger(number)) throw Error("Pega el enlace al issue de compromiso de LEVIATÁN Ω o su número.");
+  return number;
+}
+function showPrivateBackup() {
+  $("private-backup").hidden = !saved;
+  $("download-private").disabled = !saved;
+}
 async function refresh() {
+  $("refresh-registry").disabled = true;
   try {
     const [launchResponse, registryResponse] = await Promise.all([fetch(REPO + "launch.json", {cache: "no-store"}), fetch(REPO + "registry/live.json", {cache: "no-store"})]);
     if (!launchResponse.ok || !registryResponse.ok) throw Error("No se ha podido consultar el registro.");
     config = await launchResponse.json(); state = (await registryResponse.json()).state;
+    registryReady = true;
     const t0 = Date.parse(config.t0), deadline = t0 + 168 * 3600000, final = t0 + 216 * 3600000;
     $("status").textContent = config.status !== "ACTIVE" ? "Preparación · T0 no iniciado" : Date.now() < t0 ? "Inicio programado" : Date.now() < deadline ? "Abierto a contribuciones" : Date.now() < final ? "Moderación y apelaciones" : "Plazo finalizado";
     $("t0").textContent = Number.isFinite(t0) ? utc(config.t0) : "Pendiente";
@@ -52,10 +80,16 @@ async function refresh() {
     }
     if (!nodes.length) $("genealogy").textContent = "El génesis se publicará al activar el experimento.";
     const requestedNode = document.getElementById(location.hash.slice(1));
-    if (requestedNode?.classList.contains("node")) requestedNode.scrollIntoView({block: "center"});
-    $("prepare-button").disabled = !inWindow();
-    $("reveal-button").disabled = !inWindow() || !saved;
-  } catch (error) { $("status").textContent = "Estado no disponible · consulta el repositorio"; message(error.message, true); }
+    if (firstRefresh && requestedNode?.classList.contains("node")) requestedNode.scrollIntoView({block: "center"});
+    firstRefresh = false;
+    updateWindow();
+    return true;
+  } catch (error) {
+    registryReady = false; updateWindow();
+    $("status").textContent = "Estado no disponible · consulta el repositorio";
+    message(error.message, true);
+    return false;
+  } finally { $("refresh-registry").disabled = false; }
 }
 function saveFile(value, filename) {
   const url = URL.createObjectURL(new Blob([JSON.stringify(value, null, 2) + "\n"], {type: "application/json"}));
@@ -68,8 +102,11 @@ function outgoing(data, title, explanation) {
   $("send-panel").hidden = false; $("send-panel").scrollIntoView({block: "nearest"});
 }
 $("prepare-form").addEventListener("submit", async event => {
-  event.preventDefault(); message("");
+  event.preventDefault();
+  if (preparing) return;
+  preparing = true; updateWindow(); message("");
   try {
+    if (!await refresh()) throw Error("No se pudo comprobar la invitación. Pulsa Actualizar registro e inténtalo de nuevo.");
     if (!inWindow()) throw Error("El plazo de aportaciones no está abierto.");
     const token = $("token").value.trim().toLowerCase();
     if (!/^[a-f0-9]{64}$/.test(token)) throw Error("Revisa el token de invitación.");
@@ -78,6 +115,12 @@ $("prepare-form").addEventListener("submit", async event => {
     if (!parent || state.consumed.includes(tokenCommitment)) throw Error("La invitación todavía no está activa o ya está consumida. Actualiza y comprueba el nodo que te invitó.");
     const content = normal($("content").value.trim());
     if (bytes(content).length > 12000) throw Error("La aportación supera 12.000 bytes. Reduce el texto o enlaza tu archivo.");
+    if (!content) throw Error("Escribe una aportación o un enlace público a tu trabajo.");
+    if (!$("children").value.trim()) throw Error("Elige cuántas invitaciones quieres preparar; puedes elegir cero.");
+    for (const id of ["authorship", "pseudonym", "capabilities"]) {
+      if (!$(id).value.trim()) throw Error("Completa tu seudónimo, la autoría y las capacidades declaradas.");
+    }
+    if (!$("declarations").checked) throw Error("Lee las condiciones y confirma las declaraciones antes de preparar el envío.");
     const count = Number($("children").value);
     if (!Number.isInteger(count) || count < 0 || count > 10) throw Error("Prepara entre 0 y 10 invitaciones.");
     const children = Array.from({length: count}, () => random(32));
@@ -90,11 +133,13 @@ $("prepare-form").addEventListener("submit", async event => {
     if (payload.derives_from && !state.nodes[payload.derives_from]) throw Error("El nodo del que deriva tu contribución no existe.");
     saved = {format: "LEVIATAN-OMEGA-PRIVATE/1", token, salt: random(32), payload, child_tokens: children};
     saveFile(saved, "LEVIATAN-OMEGA-PRIVADO.json");
+    showPrivateBackup();
     outgoing({kind: "commit", version: 1, token_commitment: tokenCommitment, contribution_commitment: await commitment(payload, saved.salt)},
       "Compromiso", "Se ha descargado tu archivo privado. Guárdalo: lo necesitarás para revelar y para entregar tus invitaciones después de la aceptación. Ahora copia este compromiso y publícalo en GitHub.");
     $("reveal-button").disabled = false;
     message("El compromiso no revela tu aportación ni el token. No publiques el archivo privado descargado.");
   } catch (error) { message(error.message, true); }
+  finally { preparing = false; updateWindow(); }
 });
 function tab(reveal) { $("prepare-form").hidden = reveal; $("reveal-panel").hidden = !reveal; $("new-tab").classList.toggle("active", !reveal); $("reveal-tab").classList.toggle("active", reveal); $("send-panel").hidden = true; message(""); }
 $("new-tab").addEventListener("click", () => tab(false)); $("reveal-tab").addEventListener("click", () => tab(true));
@@ -102,17 +147,24 @@ $("restore").addEventListener("change", async () => {
   try { const file = $("restore").files[0]; if (!file || file.size > 60000) throw Error("Archivo no válido.");
     const value = JSON.parse(await file.text());
     if (value.format !== "LEVIATAN-OMEGA-PRIVATE/1" || !/^[a-f0-9]{64}$/.test(value.token) || !/^[a-f0-9]{64}$/.test(value.salt) || !value.payload) throw Error("El archivo no tiene el formato de participación.");
-    saved = value; $("reveal-button").disabled = !inWindow(); message("Archivo cargado solo en este navegador.");
-  } catch (error) { saved = null; $("reveal-button").disabled = true; message(error.message, true); }
+    saved = value; showPrivateBackup(); updateWindow(); message("Archivo cargado solo en este navegador. Tras COMMIT_CAPTURED puedes revelar sin esperar 24 horas.");
+  } catch (error) { saved = null; showPrivateBackup(); $("reveal-button").disabled = true; message(error.message, true); }
 });
 $("reveal-button").addEventListener("click", () => {
-  if (!inWindow() || !saved) return message("Carga tu archivo durante el plazo de participación.", true);
-  const original = Number($("original-issue").value);
-  if (!Number.isSafeInteger(original) || original < 1) return message("Indica el número del issue de compromiso.", true);
+  if (!registryReady || !inWindow() || !saved) return message("Carga tu archivo durante el plazo de participación y actualiza el registro.", true);
+  let original;
+  try { original = issueNumber($("original-issue").value); }
+  catch (error) { return message(error.message, true); }
   outgoing({kind: "reveal", version: 1, original_issue: original, token: saved.token, salt: saved.salt, payload: saved.payload},
     "Revelación", "Este envío hace públicos tu aportación y el token que vas a consumir. Las futuras invitaciones privadas no están incluidas. Publícalo con la misma cuenta del compromiso.");
 });
 $("copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText($("outgoing").value); message("Copiado. Abre GitHub y pégalo en el cuerpo del issue."); } catch { $("outgoing").focus(); $("outgoing").select(); message("Seleccionado: cópialo con el menú de tu dispositivo."); } });
+$("download-private").addEventListener("click", () => {
+  if (saved) saveFile(saved, "LEVIATAN-OMEGA-PRIVADO.json");
+});
+$("refresh-registry").addEventListener("click", () => refresh());
+setInterval(updateWindow, 30000);
+setInterval(() => { if (!document.hidden) refresh(); }, 60000);
 const supplied = new URLSearchParams(location.hash.slice(1)).get("token");
 if (supplied && /^[a-f0-9]{64}$/.test(supplied)) { $("token").value = supplied; history.replaceState(null, "", location.pathname + "#participar"); }
 refresh();
